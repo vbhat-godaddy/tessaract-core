@@ -62,6 +62,8 @@ jobs:
           environment_val=`aws ssm get-parameter --name /AdminParams/Team/Environment --query "Parameter.Value" --output text`
           team_name_val=`aws ssm get-parameter --name /AdminParams/Team/Name --query "Parameter.Value" --output text`
           bucket_name="gd-$team_name_val-$environment_val-tesseract"
+          pip install poetry
+          poetry --version
           echo $bucketname
           cd tesseract_lambda
           make clean
