@@ -1,6 +1,6 @@
 #ARTIFACT_NAME = $(shell basename "$$PWD")
 ARTIFACT_NAME=tesseract_athena_get_resolver
-ARTIFACT_VERSION=1.0
+ARTIFACT_VERSION=$(shell poetry version | cut -d " " -f 2)
 
 .PHONY: build
 build:

@@ -1,6 +1,6 @@
 [tool.poetry]
-name = "tesseract_resolver"
-version = "0.1.0"
+name = "tesseract_athena_get_resolver"
+version = "1.0"
 description = ""
 authors = ["aprasad2 <aprasad2@godaddy.com>"]
 
