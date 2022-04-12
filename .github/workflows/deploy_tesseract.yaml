@@ -66,9 +66,11 @@ jobs:
           poetry --version
           echo $bucketname
           cd tesseract_lambda
-          make clean
-          make build
-          aws s3 cp dist/*.zip s3://$bucket_name
+          make clean build
+          aws s3 cp dist/*.zip s3://$bucket_name/code
+          cd ../tesseract_resolver
+          make clean build
+          aws s3 cp dist/*.zip s3://$bucket_name/code
 
 
 

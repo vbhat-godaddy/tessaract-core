@@ -1,6 +1,6 @@
 #ARTIFACT_NAME = $(shell basename "$$PWD")
-ARTIFACT_NAME=tesseract
-ARTIFACT_VERSION = $(shell poetry version | cut -d " " -f 2)
+ARTIFACT_NAME=tesseract_athena_get_resolver
+ARTIFACT_VERSION=1.0
 
 .PHONY: build
 build:
@@ -10,7 +10,6 @@ build:
 	poetry run pip install -I --target build -r requirements.txt
 	poetry run pip install -I --target build --no-deps dist/${ARTIFACT_NAME}-${ARTIFACT_VERSION}-py3-none-any.whl
 	cd build && zip ../dist/${ARTIFACT_NAME}-${ARTIFACT_VERSION}.zip . -r9 -x "*.pyc"
-	cd src && zip -g ../dist/${ARTIFACT_NAME}-${ARTIFACT_VERSION}.zip index.py
 
 .PHONY: clean
 clean:
