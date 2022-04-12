@@ -1,0 +1,43 @@
+template_path: tesflow-base.yaml
+parameters:
+  PortfolioId: "{{ var.bigdata_portfolio }}"
+  WeeklyMaintenanceWindowStart: "SUN:09:00"
+  CustomAirflowConfigurationsJSON: |
+    {
+      "webserver.default_ui_timezone": "UTC",
+      "core.load_examples": "False",
+      "core.enable_xcom_pickling": "True",
+      "smtp.smtp_host": "relay-app.secureserver.net",
+      "smtp.smtp_mail_from": "no-reply-mwaa@godaddy.com",
+      "smtp.smtp_port": "25",
+      "smtp.smtp_ssl": "False",
+      "smtp.smtp_starttls": "True",
+      "scheduler.dag_dir_list_interval": "60"
+    }
+  TagsJSON: |
+    {
+      "Name": "tesseract-autoflow"
+    }
+  LoggingConfigurationsJSON: |
+    {
+       "DagProcessingLogs":{
+          "Enabled": false,
+          "LogLevel":"INFO"
+       },
+       "SchedulerLogs":{
+          "Enabled": true,
+          "LogLevel":"CRITICAL"
+       },
+       "TaskLogs":{
+          "Enabled": true,
+          "LogLevel":"INFO"
+       },
+       "WebserverLogs":{
+          "Enabled": true,
+          "LogLevel":"ERROR"
+       },
+       "WorkerLogs":{
+          "Enabled": true,
+          "LogLevel":"INFO"
+       }
+    }

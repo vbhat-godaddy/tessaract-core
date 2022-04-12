@@ -1,0 +1,194 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: Example CFN template for MWAA
+Parameters:
+  ServiceCatalogVersion:
+    Type: String
+    Description: Service Catalog version for MWAA
+    Default: "3.6.0"
+  EnvironmentName:
+    Type: String
+    Description: The name of your MWAA environment.
+    MaxLength: 80
+    Default: "tesseract-autoflow"
+  AirflowVersion:
+    Type: String
+    Description: (optional) The version of Apache Airflow to use for the environment.
+    Default: "2.0.2"
+  BucketNameSuffix:
+    Type: String
+    Description: |-
+      The suffix of the S3 bucket name to use to store your DAGs and associated support files for
+      the environment. Note that all GoDaddy created buckets are named as
+      ```
+      gd-{team_name}-{environment}-{suffix}
+      ```
+      The only part a user could choose is the suffix. For this particular variable,
+      you just need to provide `suffix`.
+      Example: for the bucket `gd-team-dev-private-foo-bar`, this variable would just be `foo-bar`.
+    Default: "tesseract"
+  DagS3Path:
+    Type: String
+    Description: (optional) The path to the DAGs folder in the S3 bucket.
+    Default: "airflow_environment/dags"
+  EnvironmentClass:
+    Type: String
+    Description: |-
+      (optional) The instance class to use to create the environment.
+      Each Amazon MWAA environment includes the scheduler, web server, and 1 worker. Workers
+      auto-scale up and down according to system load. You can monitor the load on your
+      environment and modify its class at any time.
+      |            | DAG         | Scheduler | Worker | Web server |
+      |            | capacity    | CPU       | CPU    | CPU        |
+      |------------|-------------|-----------|--------|------------|
+      | mw1.small  | Up to 50    | 1 vCPU    | 1 vCPU | 0.5 vCPU   |
+      | mw1.medium | Up to 250   | 2 vCPU    | 2 vCPU | 1 vCPU     |
+      | mw1.large  | Up to 1,000 | 4 vCPU    | 4 vCPU | 2 vCPU     |
+    Default: mw1.large
+    AllowedValues:
+      - mw1.small
+      - mw1.medium
+      - mw1.large
+  MaxWorkers:
+    Type: Number
+    Description: (optional) The maximum number of workers to scale up to in the environment.
+    Default: 15
+    MinValue: 1
+    MaxValue: 25
+  PluginsS3Key:
+    Type: String
+    Description: (optional) The S3 key to the plugins.zip file to use for the environment.
+    Default: ""
+  PluginsS3ObjectVersion:
+    Type: String
+    Description: |-
+      (optional) The version of the plugins.zip in file (defined in `PluginsS3Key`)
+      to use from the S3 bucket.
+    Default: ""
+  RequirementsS3Key:
+    Type: String
+    Description: (optional) The S3 key to the requirements.txt file to use for the environment.
+    Default: ""
+  RequirementsS3ObjectVersion:
+    Type: String
+    Description: |-
+      (optional) The version of the requirements.txt (defined in `RequirementsS3Key`)
+      to use from the S3 bucket.
+    Default: ""
+  WebserverAccessMode:
+    Type: String
+    Description: |-
+      The networking access of your Apache Airflow web server.
+      A private network limits access of your Airflow UI to users within your VPC. This creates
+      a VPC endpoint that requires additional configuration to allow access, including a Linux
+      Bastion. The VPC endpoint for to access the Apache Airflow UI is listed on the Environment
+      details page after you create the environment.
+    Default: "PRIVATE_ONLY"
+    AllowedValues:
+      - PRIVATE_ONLY
+  WeeklyMaintenanceWindowStart:
+    Type: String
+    Description: |-
+      (optional) The day and time of the week to start weekly maintenance updates of your
+      environment, in the format DAY:HH:MM, such as TUE:03:30. You can specify a start time
+      in 30 minute increments only.
+    Default: "MON:00:00"
+    AllowedPattern: (MON|TUE|WED|THU|FRI|SAT|SUN):([01]\d|2[0-3]):(00|30)
+  CustomAirflowConfigurationsJSON:
+    Type: String
+    Description: |-
+      (optional) JSON string defining a list of key/value pairs representing Apache Airflow configuration variables.
+      See: [Configuration Reference - Apache Airflow](https://airflow.apache.org/docs/apache-airflow/stable/configurations-ref.html)
+
+      Apache Airflow configuration is divided into sections.
+      The keys of the key/value pairs are prefixed by their section. For example:
+      ```
+      [ webserver ]
+      default_ui_timezone=UTC
+      ```
+      Is represented as:
+      ```
+      {
+       "webserver.default_ui_timezone": "UTC"
+      }
+      ```
+    Default: "{}"
+  TagsJSON:
+    Type: String
+    Description: |-
+      (optional) JSON string defining metadata tags you want to attach to your environment.
+      Example:
+      ```json
+      {
+         "Name": "testMWAA",
+         "foo": "bar"
+       }
+      ```
+    Default: "{}"
+  LoggingConfigurationsJSON:
+    Type: String
+    Description: |-
+      (optional) JSON string defining the Logging Configuration to update of your MWAA environment.
+    Default: "{}"
+  CustomIAMRoleNameSuffix:
+    Type: String
+    Description: |-
+      (optional) Naming suffix (ex. team-custom-SUFFIX) of Custom IAM Role for MWAA to run as.
+      Ensure the MWAA service can assume it.
+    Default: "tesseract-mwaa-role"
+  PortfolioId:
+    Type: String
+    Description: |-
+      (required) Portfolio ID for `BigDataAnalytics`.
+      This could be found by using AWS cli
+      ```
+      aws servicecatalog list-portfolios | jq '.PortfolioDetails[] | select(.DisplayName == "BigDataAnalytics") | .Id'
+      ```
+Resources:
+  MWAAEnvironment:
+    Type: AWS::ServiceCatalog::CloudFormationProvisionedProduct
+    Properties:
+      ProductName: MWAA
+      ProvisioningArtifactName: !Ref ServiceCatalogVersion
+      ProvisionedProductName: !Sub "mwaa-${EnvironmentName}"
+      ProvisioningParameters:
+        - Key: EnvironmentName
+          Value: !Ref EnvironmentName
+        - Key: AirflowVersion
+          Value: !Ref AirflowVersion
+        - Key: BucketNameSuffix
+          Value: !Ref BucketNameSuffix
+        - Key: DagS3Path
+          Value: !Ref DagS3Path
+        - Key: EnvironmentClass
+          Value: !Ref EnvironmentClass
+        - Key: MaxWorkers
+          Value: !Ref MaxWorkers
+        - Key: PluginsS3Key
+          Value: !Ref PluginsS3Key
+        - Key: PluginsS3ObjectVersion
+          Value: !Ref PluginsS3ObjectVersion
+        - Key: RequirementsS3Key
+          Value: !Ref RequirementsS3Key
+        - Key: RequirementsS3ObjectVersion
+          Value: !Ref RequirementsS3ObjectVersion
+        - Key: WebserverAccessMode
+          Value: !Ref WebserverAccessMode
+        - Key: WeeklyMaintenanceWindowStart
+          Value: !Ref WeeklyMaintenanceWindowStart
+        - Key: CustomAirflowConfigurationsJSON
+          Value: !Ref CustomAirflowConfigurationsJSON
+        - Key: TagsJSON
+          Value: !Ref TagsJSON
+        - Key: LoggingConfigurationsJSON
+          Value: !Ref LoggingConfigurationsJSON
+        - Key: CustomIAMRoleNameSuffix
+          Value: !Ref CustomIAMRoleNameSuffix
+        - Key: PortfolioId
+          Value: !Ref PortfolioId
+      Tags:
+        - Key: doNotShutDown
+          Value: "true"
+Outputs:
+  StackArn:
+    Value: !GetAtt MWAAEnvironment.CloudformationStackArn
+    Description: The ARN of the created cloud formation stack

@@ -1,0 +1,123 @@
+template_path: iam-policy-base.yaml
+parameters:
+  PolicyNameSuffix: tesflow-policy
+  PolicyJSON: |
+    {
+        "Version": "2012-10-17",
+        "Statement": [
+            {
+                "Action": "airflow:*",
+                "Resource": "arn:aws:airflow:us-west-2:{{ var.account_id }}:environment/*",
+                "Effect": "Allow"
+            },
+            {
+                "Action": [
+                    "s3:Get*",
+                    "s3:Put*",
+                    "s3:List*"
+                ],
+                "Resource": "*",
+                "Effect": "Allow"
+            },
+            {
+                "Action": [
+                    "lambda:Get*",
+                    "lambda:InvokeFunction",
+                    "lambda:List*"
+                ],
+                "Resource": "*",
+                "Effect": "Allow"
+            },
+            {
+                "Action": "execute-api:Invoke",
+                "Resource": "arn:aws:execute-api:*:*:*",
+                "Effect": "Allow"
+            },
+            {
+                "Action": [
+                    "ssm:GetParameter",
+                    "ssm:GetParameters"
+                ],
+                "Resource": "*",
+                "Effect": "Allow"
+            },
+            {
+                "Action": [
+                    "sns:Publish",
+                    "cloudwatch:*",
+                    "cloudformation:*"
+                ],
+                "Resource": "*",
+                "Effect": "Allow"
+            },
+            {
+                "Action": [
+                    "servicecatalog:*",
+                    "dynamodb:*",
+                ],
+                "Resource": "*",
+                "Effect": "Allow"
+            },
+            {
+                "Action": [
+                    "logs:CreateLogGroup",
+                    "logs:CreateLogStream",
+                    "logs:DescribeLogGroups",
+                    "logs:GetLogEvents",
+                    "logs:GetLogGroupFields",
+                    "logs:GetLogRecord",
+                    "logs:GetQueryResults",
+                    "logs:PutLogEvents"
+                ],
+                "Resource": [
+                    "arn:aws:logs:us-west-2:{{ var.account_id }}:log-group:airflow-*"
+                ],
+                "Effect": "Allow"
+            },
+            {
+                "Action": [
+                    "iam:GetPolicy",
+                    "iam:GetPolicyVersion",
+                    "iam:ListRoles",
+                    "iam:PassRole",
+                    "secretsmanager:*",
+                    "glue:BatchGet*",
+                    "glue:Get*",
+                    "glue:List*",
+                    "glue:StartJobRun"
+                ],
+                "Resource": "*",
+                "Effect": "Allow"
+            },
+            {
+                "Action": [
+                    "sqs:ChangeMessageVisibility",
+                    "sqs:DeleteMessage",
+                    "sqs:GetQueueAttributes",
+                    "sqs:GetQueueUrl",
+                    "sqs:ReceiveMessage",
+                    "sqs:SendMessage"
+                ],
+                "Resource": "arn:aws:sqs:us-west-2:*:airflow-celery-*",
+                "Effect": "Allow"
+            },
+            {
+                "Condition": {
+                    "StringLike": {
+                        "kms:ViaService": [
+                            "sqs.us-west-2.amazonaws.com",
+                            "ssm.us-west-2.amazonaws.com"
+                        ]
+                    }
+                },
+                "Action": [
+                    "kms:Decrypt",
+                    "kms:DescribeKey",
+                    "kms:Encrypt",
+                    "kms:GenerateDataKey*"
+                ],
+                "Effect": "Allow",
+                "NotResource": "arn:aws:kms:*:{{ var.account_id }}:key/*"
+            }
+        ]
+    }

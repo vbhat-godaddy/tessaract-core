@@ -1,0 +1,51 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: IAM Role with limited permissions from SC
+Parameters:
+  StackName:
+    Type: String
+    Description: StackName Tag for Product creation
+  TeamName:
+    Type: AWS::SSM::Parameter::Value<String>
+    Default: /AdminParams/Team/Name
+  AssumingServices:
+    Type: String
+    Default: ""
+  AssumingRoles:
+    Type: String
+    Default: ""
+  MoreManagedPolicyArns:
+    Type: String
+    Default: ""
+  DevelopmentTeam:
+    Type: AWS::SSM::Parameter::Value<String>
+    Description: SSM Parameter for team owning the created resources.
+    Default: /AdminParams/Team/Name
+    AllowedValues:
+      - /AdminParams/Team/Name
+
+Resources:
+  Repository:
+    Type: AWS::ServiceCatalog::CloudFormationProvisionedProduct
+    Properties:
+      ProductName: IAMRole
+      ProvisioningArtifactName: 1.0.7
+      ProvisionedProductName: !Sub ${TeamName}-${StackName}-role
+      ProvisioningParameters:
+        - Key: RoleNameSuffix
+          Value: !Sub "${StackName}-role"
+        - Key: AssumingServices
+          Value: !Ref AssumingServices
+        - Key: AssumingRoles
+          Value: !Ref AssumingRoles
+        - Key: ManagedPolicyArns
+          Value: !Join
+            - ","
+            - - !Sub arn:aws:iam::${AWS::AccountId}:policy/GD-AWS-KMS-USER
+              - !Ref MoreManagedPolicyArns
+      Tags:
+        - Key: doNotShutDown
+          Value: true
+Outputs:
+  RoleARN:
+    Description: ARN of custom IAM Role
+    Value: !Sub arn:aws:iam::${AWS::AccountId}:role/${TeamName}-custom-${StackName}-role

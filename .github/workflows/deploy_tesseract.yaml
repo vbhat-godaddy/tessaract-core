@@ -1,0 +1,101 @@
+# This is a workflow to build/launch or rebuild given sceptre CF stack
+
+name: Build Stack
+
+# Controls when the workflow will run
+on:
+  # Allows you to run this workflow manually from the Actions tab, with stack path as argument
+  workflow_dispatch:
+    inputs:
+      region:
+        description: which region should Tesseract product be deployed to?
+        required: true
+        default: us-west-2
+      deploy_role:
+        description: Role ARN to assume while deploying Tesseract
+        required: true
+      access_id:
+        description: AWS_ACCESS_KEY_ID value to assume deploy_role
+        required: true
+      secret_key:
+        description: AWS_SECRET_ACCESS_KEY value to assume deploy_role
+        required: true
+jobs:
+  # This workflow contains a single job called "build-stack" to deploy Tesseract
+  build-stack:
+    name: Deploy Tesseract
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+      - name: Install sceptre
+        run: |
+          pip3 install sceptre
+      # Configure AWS Credentials
+      - name: Configuring Deploy user
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{  github.event.inputs.access_id }}
+          aws-secret-access-key: ${{  github.event.inputs.secret_key }}
+          role-to-assume: ${{  github.event.inputs.deploy_role }}
+          role-duration-seconds: 3600
+          aws-region: ${{  github.event.inputs.region }}
+
+      # Testing user
+      - name: sceptre launch
+        id: build_task
+        run: |
+          aws sts get-caller-identity
+          sh vars/var_generator.sh
+
+      # Notify on slack
+      # Always checkout - https://docs.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions
+      - name: Get GD version of rtCamp actions
+        if: ${{ always() }}
+        uses: actions/checkout@v2
+        with:
+          repository: gdcorp-action-public-forks/action-slack-notify
+          token: ${{ secrets.CLOUD_CREDS_UPDATE_TKN }}
+          path: slack-notify-action
+
+      # Post following message on Job Success
+      - name: Success Notifier
+        if: ${{ success() }}
+        uses: ./slack-notify-action
+        env:
+          SLACK_CHANNEL: dri-findml-alerts
+          SLACK_USERNAME: ahpBot
+          SLACK_ICON_EMOJI: ':clapping:'
+          SLACK_COLOR: ${{ job.status }}
+          SLACK_MESSAGE: 'Stack launch/Update successful for ${{  github.event.inputs.stack_path }} :highfive:'
+          SLACK_WEBHOOK: ${{ secrets.SCIENCE_AWS_ALERTS }}
+          SLACK_FOOTER: ahpBot GitHub notification
+
+      # Post following message on Job Failure
+      - name: Failure Notifier
+        if: ${{ failure() }}
+        uses: ./slack-notify-action
+        env:
+          SLACK_CHANNEL: dri-findml-alerts
+          SLACK_USERNAME: ahpBot
+          SLACK_ICON_EMOJI: ':headbang:'
+          SLACK_COLOR: ${{ job.status }}
+          SLACK_MESSAGE: 'Stack launch/Update failed for ${{  github.event.inputs.stack_path }} \n ${{steps.build_task.outputs.output}} '
+          SLACK_WEBHOOK: ${{ secrets.SCIENCE_AWS_ALERTS }}
+          SLACK_FOOTER: ahpBot GitHub notification
+
+      # Post following message on Job Cancellation
+      - name: Cancel Notifier
+        if: ${{ cancelled() }}
+        uses: ./slack-notify-action
+        env:
+          SLACK_CHANNEL: dri-findml-alerts
+          SLACK_USERNAME: ahpBot
+          SLACK_ICON_EMOJI: ':depressed:'
+          SLACK_COLOR: ${{ job.status }}
+          SLACK_MESSAGE: 'Stack launch/Update cancelled for ${{  github.event.inputs.stack_path }} :sad:'
+          SLACK_WEBHOOK: ${{ secrets.SCIENCE_AWS_ALERTS }}
+          SLACK_FOOTER: ahpBot GitHub notification
