@@ -63,7 +63,7 @@ jobs:
           team_name_val=`aws ssm get-parameter --name /AdminParams/Team/Name --query "Parameter.Value" --output text`
           bucket_name="gd-$team_name_val-$environment_val-tesseract"
           echo $bucketname
-          cd ../tesseract_lambda
+          cd tesseract_lambda
           make clean
           make build
           aws s3 cp dist/*.zip s3://$bucket_name
