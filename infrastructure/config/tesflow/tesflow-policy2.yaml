@@ -1,13 +1,13 @@
 template_path: iam-policy-base.yaml
 parameters:
-  PolicyNameSuffix: tesflow-policy
+  PolicyNameSuffix: tesflow-policy2
   PolicyJSON: |
     {
         "Version": "2012-10-17",
         "Statement": [
             {
                 "Action": "airflow:*",
-                "Resource": "arn:aws:airflow:{{ var.region }}:{{ var.account_id }}:environment/*",
+                "Resource": "arn:aws:airflow:us-west-2:338555309768:environment/*",
                 "Effect": "Allow"
             },
             {
@@ -70,7 +70,7 @@ parameters:
                     "logs:PutLogEvents"
                 ],
                 "Resource": [
-                    "arn:aws:logs:{{ var.region }}:{{ var.account_id }}:log-group:airflow-*"
+                    "arn:aws:logs:us-west-2:338555309768:log-group:airflow-*"
                 ],
                 "Effect": "Allow"
             },
