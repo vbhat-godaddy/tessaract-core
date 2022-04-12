@@ -50,7 +50,7 @@ Parameters:
       - mw1.large
   MaxWorkers:
     Type: Number
-    Description: (optional) The maximum number of workers to scale up to in the environment.
+    Description: (optional) The maximum number of worker-artifacts to scale up to in the environment.
     Default: 15
     MinValue: 1
     MaxValue: 25

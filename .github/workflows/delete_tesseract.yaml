@@ -1,6 +1,6 @@
 # This is a workflow to build/launch or rebuild given sceptre CF stack
 
-name: Deploy Tesseract
+name: Delete Tesseract
 
 # Controls when the workflow will run
 on:
@@ -17,8 +17,8 @@ on:
         default: tesseract
 jobs:
   # This workflow contains a single job called "build-stack" to deploy Tesseract
-  build-stack:
-    name: Deploy Tesseract
+  delete-stack:
+    name: Destroy Tesseract
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
     environment: ${{  github.event.inputs.environment }}
@@ -39,37 +39,19 @@ jobs:
           role-duration-seconds: 3600
           aws-region: ${{  github.event.inputs.region }}
 
-      # deploy base artifacts
-      - name: deploy base stack via sceptre
-        id: deploy_base_stack
+      # deploy
+      - name: delete via sceptre
+        id: delete_tesseract
         run: |
           aws sts get-caller-identity
           cd infrastructure
           sh vars/var_generator.sh ${{  github.event.inputs.region }}
-          echo "Deploying Tesflow Module"
-
-          echo "Deploying notification channel"
-          echo "Deploying artifacts bucket"
-          sceptre --var-file=vars/deployment_vars.yaml launch -y worker-artifacts/tesseract-s3.yaml
-          echo "Deploying worker artifacts"
-
-      # deploy code artifacts
-      - name: deploy code files
-        id: deploy_code
-        run: |
-          aws sts get-caller-identity
-          environment_val=`aws ssm get-parameter --name /AdminParams/Team/Environment --query "Parameter.Value" --output text`
-          team_name_val=`aws ssm get-parameter --name /AdminParams/Team/Name --query "Parameter.Value" --output text`
-          bucket_name="gd-$team_name_val-$environment_val-tesseract"
-          echo $bucketname
-          cd ../tesseract_lambda
-          make clean
-          make build
-          aws s3 cp dist/*.zip s3://$bucket_name
-
-
-
-
+          echo "Tearing down Tesflow Module"
+          sceptre --var-file=vars/deployment_vars.yaml delete -y tesflow/tesflow.yaml
+          sceptre --var-file=vars/deployment_vars.yaml delete -y tesflow/tesflow-role.yaml
+          sceptre --var-file=vars/deployment_vars.yaml delete -y tesflow/tesflow-policy.yaml
+          echo "Tearing down notification channel"
+          sceptre --var-file=vars/deployment_vars.yaml delete -y reporting/notification-sns.yaml
       # Notify on slack
       # Always checkout - https://docs.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions
       - name: Get GD version of rtCamp actions

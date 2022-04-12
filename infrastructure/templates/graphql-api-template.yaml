@@ -1,0 +1,70 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: AppSync GraphQL API
+Parameters:
+  AuthenticationType:
+    Type: String
+    Description: Security configuration for your GraphQL API
+    AllowedValues:
+      - API_KEY
+      - AWS_IAM
+      - AMAZON_COGNITO_USER_POOLS
+      - OPENID_CONNECT
+      - AWS_LAMBDA
+  ExcludeVerboseContent:
+    Type: String
+    Description: Exclude sections that contain information such as headers, context, and evaluated mapping templates, regardless of logging level from logs.
+    AllowedValues:
+      - true
+      - false
+    Default: true
+  FieldLogLevel:
+    Type: String
+    Description: The field logging level.
+    AllowedValues:
+      - NONE
+      - ERROR
+      - ALL
+    Default: NONE
+  Name:
+    Type: String
+    Description: Name of the GraphQL API
+  XrayEnabled:
+    Type: String
+    Description: A flag representing whether X-Ray tracing is enabled for this GraphqlApi.
+    Default: false
+    AllowedValues:
+      - true
+      - false
+  AuthorizerUri:
+    Type: String
+    Description: (If AuthenticationType is AWS_LAMBDA) The ARN of the Lambda function to be called for authorization.
+    Default: ""
+Conditions:
+  IsLambda: !Equals [ !Ref AuthenticationType, AWS_LAMBDA ]
+Resources:
+  GraphQLAPI:
+    Type: AWS::AppSync::GraphQLApi
+    Properties:
+      Name: !Ref Name
+      LogConfig:
+        CloudWatchLogsRoleArn: !Sub arn:aws:iam::${AWS::AccountId}:role/GD-APPSVCS-LogRole
+        ExcludeVerboseContent: !Ref ExcludeVerboseContent
+        FieldLogLevel: !Ref FieldLogLevel
+      AuthenticationType: !Ref AuthenticationType
+      XrayEnabled: !Ref XrayEnabled
+      LambdaAuthorizerConfig:
+        !If
+        - IsLambda
+        -
+          AuthorizerUri: !Ref AuthorizerUri
+        - !Ref "AWS::NoValue"
+Outputs:
+  GraphQLApiArn:
+    Description: ARN of the GraphQL API
+    Value: !Ref GraphQLAPI
+  GraphQLApiId:
+    Description: ID of the GraphQL API
+    Value: !GetAtt GraphQLAPI.ApiId
+  GraphQLApiGraphQLUrl:
+    Description: Endpoint of the GraphQL API
+    Value: !GetAtt GraphQLAPI.GraphQLUrl

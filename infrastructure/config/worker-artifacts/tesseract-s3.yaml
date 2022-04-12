@@ -1,0 +1,5 @@
+template_path: s3-base.yaml
+parameters:
+  BucketNameSuffix: tesseract
+  ServiceCatalogVersion: 1.10.0
+  MoveToGlacierStorageDays: "-1"

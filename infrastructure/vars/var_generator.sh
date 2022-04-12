@@ -9,4 +9,6 @@ echo "team_name: $team_name_val" >> $var_file
 portfolio_id_val=`aws servicecatalog list-portfolios | jq '.PortfolioDetails[] | select(.DisplayName == "BigDataAnalytics") | .Id' | tr -d '"'`
 echo "bigdata_portfolio: $portfolio_id_val" >> $var_file
 echo "region: $1" >> $var_file
+environment_val=`aws ssm get-parameter --name /AdminParams/Team/Environment --query "Parameter.Value" --output text`
+echo "env_val: $environment_val" >> $var_file
 cat $var_file

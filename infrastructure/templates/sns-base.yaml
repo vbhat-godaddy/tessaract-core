@@ -1,0 +1,80 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: Launch SNS topic
+Parameters:
+  PolicyDocument:
+    Type: String
+    Description: (optional) A policy document that contains permissions to add to the specified SNS topics.
+    Default: ""
+  SnsTopicName:
+    Type: String
+    Description: Name of the SNS Topic
+    AllowedPattern: "[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*[a-zA-Z0-9]*(?:.fifo)?"
+  TeamSlackWebHook:
+    Type: String
+    Description: (optional) Slack webhook for notifications
+    Default: ""
+  QueueName:
+    Type: String
+    Description: (optional) SQS Queue name for notifications
+    Default: ""
+  LambdaS3Bucket:
+    Type: String
+    Description: SSM parameter referencing the S3 Bucket which contains the Lambda code
+    Default: /AdminParams/Team/GlobalBucket
+    AllowedValues:
+      - /AdminParams/Team/GlobalBucket
+  DevelopmentTeam:
+    Type: String
+    Description: SSM Parameter for team owning the created resources.
+    Default: /AdminParams/Team/Name
+    AllowedValues:
+      - /AdminParams/Team/Name
+  DevelopmentEnvironment:
+    Type: String
+    Description: SSM Parameter for development environment this will live in.
+    Default: /AdminParams/Team/Environment
+    AllowedValues:
+      - /AdminParams/Team/Environment
+  FifoTopic:
+    Type: String
+    Description: Set to true to create a FIFO topic.
+    Default: false
+    AllowedValues:
+      - true
+      - false
+  ContentBasedDeduplication:
+    Type: String
+    Description: Enables content-based deduplication for FIFO topics.
+    Default: false
+    AllowedValues:
+      - true
+      - false
+Resources:
+  NotificationTopic:
+    Type: AWS::ServiceCatalog::CloudFormationProvisionedProduct
+    Properties:
+      ProductName: SNS
+      ProvisioningArtifactName: 1.1.0
+      ProvisionedProductName: !Ref SnsTopicName
+      ProvisioningParameters:
+        - Key: PolicyDocument
+          Value: !Ref PolicyDocument
+        - Key: SnsTopicName
+          Value: !Ref SnsTopicName
+        - Key: TeamSlackWebHook
+          Value: !Ref TeamSlackWebHook
+        - Key: QueueName
+          Value: !Ref QueueName
+        - Key: LambdaS3Bucket
+          Value: !Ref LambdaS3Bucket
+        - Key: DevelopmentTeam
+          Value: !Ref DevelopmentTeam
+        - Key: DevelopmentEnvironment
+          Value: !Ref DevelopmentEnvironment
+        - Key: FifoTopic
+          Value: !Ref FifoTopic
+        - Key: ContentBasedDeduplication
+          Value: !Ref ContentBasedDeduplication
+      Tags:
+        - Key: doNotShutDown
+          Value: true

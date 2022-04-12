@@ -1,0 +1,23 @@
+template_path: iam-policy-base.yaml
+parameters:
+  PolicyNameSuffix: sync-api-access
+  PolicyJSON: |
+    {
+        "Version": "2012-10-17",
+        "Statement": [
+            {
+               "Effect": "Allow",
+               "Action": [
+                  "appsync:GraphQL"
+               ],
+               "Resource": [
+                  "arn:aws:appsync:{{ var.region }}:{{ var.account_id }}:apis/*"
+               ]
+            },
+            {
+                "Effect": "Allow",
+                "Action": "sts:AssumeRole",
+                "Resource": "arn:aws:iam::{{ var.account_id }}:role/*"
+            }
+        ]
+    }

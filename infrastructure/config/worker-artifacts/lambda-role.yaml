@@ -1,0 +1,14 @@
+template_path: iam-role-base.yaml
+parameters:
+  StackName: "tes-lambda"
+  AssumingServices:
+    - lambda.amazonaws.com
+  MoreManagedPolicyArns:
+    - "arn:aws:iam::aws:policy/AmazonS3FullAccess"
+    - "arn:aws:iam::aws:policy/AmazonAthenaFullAccess"
+    - "arn:aws:iam::aws:policy/AmazonElasticMapReduceFullAccess"
+    - "arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess"
+    - "arn:aws:iam::aws:policy/AWSLambda_FullAccess"
+    - "arn:aws:iam::aws:policy/AmazonEC2FullAccess"
+    - "arn:aws:iam::aws:policy/CloudWatchFullAccess"
+    - "arn:aws:iam::{{ var.account_id }}:policy/{{ var.team_name }}-custom-teslambda-policy"

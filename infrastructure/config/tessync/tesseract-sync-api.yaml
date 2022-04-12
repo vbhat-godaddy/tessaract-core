@@ -1,0 +1,4 @@
+template_path: graphql-api-template.yaml
+parameters:
+  AuthenticationType: "AWS_IAM"
+  Name: "tesseract-sync"

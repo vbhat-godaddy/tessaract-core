@@ -47,25 +47,22 @@ jobs:
           cd infrastructure
           sh vars/var_generator.sh ${{  github.event.inputs.region }}
           echo "Deploying Tesflow Module"
-
+          sceptre --var-file=vars/deployment_vars.yaml launch -y tesflow/tesflow-policy.yaml
+          sceptre --var-file=vars/deployment_vars.yaml launch -y tesflow/tesflow-role.yaml
+          sceptre --var-file=vars/deployment_vars.yaml launch -y tesflow/tesflow.yaml
           echo "Deploying notification channel"
+          sceptre --var-file=vars/deployment_vars.yaml launch -y reporting/notification-sns.yaml
           echo "Deploying artifacts bucket"
           sceptre --var-file=vars/deployment_vars.yaml launch -y worker-artifacts/tesseract-s3.yaml
           echo "Deploying worker artifacts"
+          sceptre --var-file=vars/deployment_vars.yaml launch -y worker-artifacts/lambda-custom-policy.yaml
+          sceptre --var-file=vars/deployment_vars.yaml launch -y worker-artifacts/lambda-role.yaml
 
       # deploy code artifacts
       - name: deploy code files
         id: deploy_code
         run: |
           aws sts get-caller-identity
-          environment_val=`aws ssm get-parameter --name /AdminParams/Team/Environment --query "Parameter.Value" --output text`
-          team_name_val=`aws ssm get-parameter --name /AdminParams/Team/Name --query "Parameter.Value" --output text`
-          bucket_name="gd-$team_name_val-$environment_val-tesseract"
-          echo $bucketname
-          cd ../tesseract_lambda
-          make clean
-          make build
-          aws s3 cp dist/*.zip s3://$bucket_name
 
 
 

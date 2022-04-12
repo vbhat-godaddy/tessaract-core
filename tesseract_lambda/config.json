@@ -1,0 +1,6 @@
+{
+  "deployRegions": [
+    "us-west-2"
+  ],
+  "topic": "tesseract"
+}

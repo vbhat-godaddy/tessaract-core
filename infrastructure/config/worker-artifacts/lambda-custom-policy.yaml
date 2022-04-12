@@ -1,30 +1,17 @@
 template_path: iam-policy-base.yaml
 parameters:
-  PolicyNameSuffix: tesflow-policy2
+  PolicyNameSuffix: teslambda-policy
   PolicyJSON: |
     {
         "Version": "2012-10-17",
         "Statement": [
             {
                 "Action": "airflow:*",
-                "Resource": "arn:aws:airflow:us-west-2:338555309768:environment/*",
+                "Resource": "arn:aws:airflow:{{ var.region }}:{{ var.account_id }}:environment/*",
                 "Effect": "Allow"
             },
             {
-                "Action": [
-                    "s3:Get*",
-                    "s3:Put*",
-                    "s3:List*"
-                ],
-                "Resource": "*",
-                "Effect": "Allow"
-            },
-            {
-                "Action": [
-                    "lambda:Get*",
-                    "lambda:InvokeFunction",
-                    "lambda:List*"
-                ],
+                "Action": "s3:*",
                 "Resource": "*",
                 "Effect": "Allow"
             },
@@ -43,23 +30,6 @@ parameters:
             },
             {
                 "Action": [
-                    "sns:Publish",
-                    "cloudwatch:*",
-                    "cloudformation:*"
-                ],
-                "Resource": "*",
-                "Effect": "Allow"
-            },
-            {
-                "Action": [
-                    "servicecatalog:*",
-                    "dynamodb:*"
-                ],
-                "Resource": "*",
-                "Effect": "Allow"
-            },
-            {
-                "Action": [
                     "logs:CreateLogGroup",
                     "logs:CreateLogStream",
                     "logs:DescribeLogGroups",
@@ -70,7 +40,7 @@ parameters:
                     "logs:PutLogEvents"
                 ],
                 "Resource": [
-                    "arn:aws:logs:us-west-2:338555309768:log-group:airflow-*"
+                    "arn:aws:logs:{{ var.region }}:{{ var.account_id }}:log-group:airflow-*"
                 ],
                 "Effect": "Allow"
             },
@@ -98,7 +68,7 @@ parameters:
                     "sqs:ReceiveMessage",
                     "sqs:SendMessage"
                 ],
-                "Resource": "arn:aws:sqs:us-west-2:*:airflow-celery-*",
+                "Resource": "arn:aws:sqs:{{ var.region }}:*:airflow-celery-*",
                 "Effect": "Allow"
             }
         ]

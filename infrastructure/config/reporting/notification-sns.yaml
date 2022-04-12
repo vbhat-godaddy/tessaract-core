@@ -1,0 +1,4 @@
+template_path: sns-base.yaml
+parameters:
+  SnsTopicName: tesseract-notify
+  TeamSlackWebHook: https://hooks.slack.com/services/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

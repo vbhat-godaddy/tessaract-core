@@ -1,0 +1,9 @@
+template_path: iam-role-base.yaml
+parameters:
+  StackName: "sync-api-access"
+  AssumingServices:
+    - lambda.amazonaws.com
+    - ec2.amazonaws.com
+    - iam.amazonaws.com
+  MoreManagedPolicyArns:
+    - "arn:aws:iam::{{ var.account_id }}:policy/{{ var.team_name }}-custom-sync-api-access"
