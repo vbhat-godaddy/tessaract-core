@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "tesseract"
+name = "tesseract_resolver"
 version = "0.1.0"
 description = ""
 authors = ["aprasad2 <aprasad2@godaddy.com>"]
