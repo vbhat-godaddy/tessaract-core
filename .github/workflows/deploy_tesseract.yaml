@@ -65,11 +65,15 @@ jobs:
           pip install poetry
           poetry --version
           echo $bucketname
+          echo "**** Deploying tesseract lambda"
           cd tesseract_lambda
-          make clean build
+          make clean
+          make build
           aws s3 cp dist/*.zip s3://$bucket_name/code
+          echo "**** Deploying tesseract resolver"
           cd ../tesseract_resolver
-          make clean build
+          make clean
+          make build
           aws s3 cp dist/*.zip s3://$bucket_name/code
 
 
