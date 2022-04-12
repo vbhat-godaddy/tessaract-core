@@ -51,6 +51,7 @@ jobs:
           aws sts get-caller-identity
           cd infrastructure
           sh vars/var_generator.sh
+          cat vars/deployment_vars.yaml
 
       # Notify on slack
       # Always checkout - https://docs.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions
