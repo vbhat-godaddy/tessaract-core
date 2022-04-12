@@ -45,7 +45,7 @@ jobs:
         run: |
           aws sts get-caller-identity
           cd infrastructure
-          sh vars/var_generator.sh
+          sh vars/var_generator.sh ${{  github.event.inputs.region }}
           sceptre --var-file=vars/deployment_vars.yaml launch tesflow/tesflow-policy.yaml
           sceptre --var-file=vars/deployment_vars.yaml launch tesflow/tesflow-role.yaml
           sceptre --var-file=vars/deployment_vars.yaml launch tesflow/tesflow.yaml
