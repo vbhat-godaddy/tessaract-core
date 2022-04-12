@@ -57,6 +57,8 @@ jobs:
         id: deploy_code
         run: |
           aws sts get-caller-identity
+          ls
+          cat infrastructure/vars/deployment_vars.yaml
           environment_val=`aws ssm get-parameter --name /AdminParams/Team/Environment --query "Parameter.Value" --output text`
           team_name_val=`aws ssm get-parameter --name /AdminParams/Team/Name --query "Parameter.Value" --output text`
           bucket_name="gd-$team_name_val-$environment_val-tesseract"
