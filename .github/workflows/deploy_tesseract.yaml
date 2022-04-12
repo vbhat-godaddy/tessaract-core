@@ -49,6 +49,7 @@ jobs:
         id: build_task
         run: |
           aws sts get-caller-identity
+          ls
           sh vars/var_generator.sh
 
       # Notify on slack
