@@ -50,7 +50,6 @@ jobs:
 
           echo "Deploying notification channel"
           echo "Deploying artifacts bucket"
-          sceptre --var-file=vars/deployment_vars.yaml launch -y worker-artifacts/tesseract-s3.yaml
           echo "Deploying worker artifacts"
 
       # deploy code artifacts
