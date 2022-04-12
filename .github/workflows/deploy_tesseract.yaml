@@ -71,7 +71,7 @@ jobs:
           make build
           aws s3 cp dist/*.zip s3://$bucket_name/code
           echo "**** Deploying tesseract resolver"
-          cd ../tesseract_resolver
+          cd ../tesseract_athena_get_resolver
           make clean
           make build
           aws s3 cp dist/*.zip s3://$bucket_name/code
