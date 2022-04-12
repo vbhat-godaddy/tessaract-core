@@ -46,9 +46,9 @@ jobs:
           aws sts get-caller-identity
           cd infrastructure
           sh vars/var_generator.sh ${{  github.event.inputs.region }}
-          sceptre --var-file=vars/deployment_vars.yaml launch tesflow/tesflow-policy.yaml
-          sceptre --var-file=vars/deployment_vars.yaml launch tesflow/tesflow-role.yaml
-          sceptre --var-file=vars/deployment_vars.yaml launch tesflow/tesflow.yaml
+          sceptre --var-file=vars/deployment_vars.yaml launch -y tesflow/tesflow-policy.yaml
+          sceptre --var-file=vars/deployment_vars.yaml launch -y tesflow/tesflow-role.yaml
+          sceptre --var-file=vars/deployment_vars.yaml launch -y tesflow/tesflow.yaml
 
       # Notify on slack
       # Always checkout - https://docs.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions
