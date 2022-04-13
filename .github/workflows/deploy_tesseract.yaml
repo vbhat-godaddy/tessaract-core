@@ -47,13 +47,13 @@ jobs:
           cd infrastructure
           sh vars/var_generator.sh ${{  github.event.inputs.region }}
           echo "Deploying artifacts bucket"
-          sceptre --var-file=vars/deployment_vars.yaml launch -y worker-artifacts/tesseract-s3.yaml
+      #    sceptre --var-file=vars/deployment_vars.yaml launch -y worker-artifacts/tesseract-s3.yaml
           echo "Deploying Tesflow Module"
-          sceptre --var-file=vars/deployment_vars.yaml launch -y tesflow/tesflow-policy.yaml
-          sceptre --var-file=vars/deployment_vars.yaml launch -y tesflow/tesflow-role.yaml
-          sceptre --var-file=vars/deployment_vars.yaml launch -y tesflow/tesflow.yaml
+      #    sceptre --var-file=vars/deployment_vars.yaml launch -y tesflow/tesflow-policy.yaml
+      #    sceptre --var-file=vars/deployment_vars.yaml launch -y tesflow/tesflow-role.yaml
+      #    sceptre --var-file=vars/deployment_vars.yaml launch -y tesflow/tesflow.yaml
           echo "Deploying notification channel"
-          sceptre --var-file=vars/deployment_vars.yaml launch -y reporting/notification-sns.yaml
+      #    sceptre --var-file=vars/deployment_vars.yaml launch -y reporting/notification-sns.yaml
 
       # deploy code artifacts
       - name: deploy code files
@@ -93,11 +93,13 @@ jobs:
         run: |
           aws sts get-caller-identity
           cd infrastructure
-          sceptre --var-file=vars/deployment_vars.yaml launch -y worker-artifacts/lambda-custom-policy.yaml
-          sceptre --var-file=vars/deployment_vars.yaml launch -y worker-artifacts/lambda-role.yaml
-          sceptre --var-file=vars/deployment_vars.yaml launch -y worker-artifacts/tesseract-dyn-loader.yaml
-          sceptre --var-file=vars/deployment_vars.yaml launch -y worker-artifacts/tes-athena-get-resolver.yaml
-          sceptre --var-file=vars/deployment_vars.yaml launch -y worker-artifacts/tes-lambda.yaml
+      #    sceptre --var-file=vars/deployment_vars.yaml launch -y worker-artifacts/lambda-custom-policy.yaml
+      #    sceptre --var-file=vars/deployment_vars.yaml launch -y worker-artifacts/lambda-role.yaml
+      #    sceptre --var-file=vars/deployment_vars.yaml launch -y worker-artifacts/tesseract-dyn-loader.yaml
+      #    sceptre --var-file=vars/deployment_vars.yaml launch -y worker-artifacts/tes-athena-get-resolver.yaml
+      #    sceptre --var-file=vars/deployment_vars.yaml launch -y worker-artifacts/tes-lambda.yaml
+          echo "**** Updating connections"
+          python scripts/connection_creator.py
 
       # Notify on slack
       # Always checkout - https://docs.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions
