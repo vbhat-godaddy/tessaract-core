@@ -57,8 +57,6 @@ jobs:
         id: deploy_code
         run: |
           aws sts get-caller-identity
-          ls
-          cat infrastructure/vars/deployment_vars.yaml
           environment_val=`aws ssm get-parameter --name /AdminParams/Team/Environment --query "Parameter.Value" --output text`
           team_name_val=`aws ssm get-parameter --name /AdminParams/Team/Name --query "Parameter.Value" --output text`
           bucket_name="gd-$team_name_val-$environment_val-tesseract"
@@ -91,6 +89,10 @@ jobs:
         id: deploy_worker
         run: |
           aws sts get-caller-identity
+          cd infrastructure
+          sceptre --var-file=vars/deployment_vars.yaml launch -y worker-artifacts/tesseract-dyn-loader.yaml
+          sceptre --var-file=vars/deployment_vars.yaml launch -y worker-artifacts/tesseract-athena-get-resolver.yaml
+          sceptre --var-file=vars/deployment_vars.yaml launch -y worker-artifacts/tes-lambda.yaml
 
       # Notify on slack
       # Always checkout - https://docs.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions
