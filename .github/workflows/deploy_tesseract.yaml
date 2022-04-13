@@ -84,7 +84,7 @@ jobs:
           cd ../tesseract_lambda/src
           aws s3 cp tesseract/* s3://$bucket_name/airflow_environment/dags/tesseract/ --recursive
           cd ../../tesflow_artifacts
-          aws s3 cp * s3://$bucket_name/airflow_environment/dags/ --recursive
+          aws s3 cp . s3://$bucket_name/airflow_environment/dags/ --recursive
 
       # deploy worker code
       - name: deploy worker
