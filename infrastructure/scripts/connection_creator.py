@@ -1,7 +1,3 @@
-import os
+import sys
 
-AWS_ACCESS_KEY = os.environ['AWS_DEPLOY_ACCESS_KEY']
-AWS_SECRET_KEY = os.environ['AWS_DEPLOY_SECRET_KEY']
-AWS_ROLE = os.environ['AWS_DEPLOY_ROLE']
-
-print(AWS_ACCESS_KEY + "," + AWS_SECRET_KEY + "," + AWS_ROLE)
+print(sys.argv)
