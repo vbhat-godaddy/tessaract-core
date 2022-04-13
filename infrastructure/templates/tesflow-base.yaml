@@ -9,7 +9,7 @@ Parameters:
     Type: String
     Description: The name of your MWAA environment.
     MaxLength: 80
-    Default: "tesseract-autoflow"
+    Default: "tesseract-airflow"
   AirflowVersion:
     Type: String
     Description: (optional) The version of Apache Airflow to use for the environment.
