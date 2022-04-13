@@ -11,7 +11,7 @@ dag_id = "tesseract_refresh_creds"
 args = {"owner": "tesseract", "retries": 1, "retry_delay": timedelta(minutes=2)}
 with models.DAG(
     dag_id=dag_id,
-    schedule_interval=timedelta(days=30),
+    schedule_interval=timedelta(days=1),
     start_date=dates.days_ago(1),  # Change to suit your needs
     max_active_runs=1,
     default_args=args,

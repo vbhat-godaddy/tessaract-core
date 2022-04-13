@@ -46,11 +46,14 @@ jobs:
           aws sts get-caller-identity
           cd infrastructure
           sh vars/var_generator.sh ${{  github.event.inputs.region }}
-          echo "Deploying Tesflow Module"
-
-          echo "Deploying notification channel"
           echo "Deploying artifacts bucket"
-          echo "Deploying worker artifacts"
+          sceptre --var-file=vars/deployment_vars.yaml launch -y worker-artifacts/tesseract-s3.yaml
+          echo "Deploying Tesflow Module"
+          sceptre --var-file=vars/deployment_vars.yaml launch -y tesflow/tesflow-policy.yaml
+          sceptre --var-file=vars/deployment_vars.yaml launch -y tesflow/tesflow-role.yaml
+          sceptre --var-file=vars/deployment_vars.yaml launch -y tesflow/tesflow.yaml
+          echo "Deploying notification channel"
+          sceptre --var-file=vars/deployment_vars.yaml launch -y reporting/notification-sns.yaml
 
       # deploy code artifacts
       - name: deploy code files
