@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "dynamo_worker"
+name = "tesseract_dynamo_worker"
 version = "1.0"
 description = ""
 authors = ["aprasad2 <aprasad2@godaddy.com>"]

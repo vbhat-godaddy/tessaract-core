@@ -1,5 +1,5 @@
 #ARTIFACT_NAME = $(shell basename "$$PWD")
-ARTIFACT_NAME=dynamo_worker
+ARTIFACT_NAME=tesseract_dynamo_worker
 ARTIFACT_VERSION=$(shell poetry version | cut -d " " -f 2)
 
 .PHONY: build
