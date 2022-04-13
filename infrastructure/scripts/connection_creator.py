@@ -15,9 +15,9 @@ output = None
 error_output = None
 role_dict = {"role_arn": sys.argv[3]}
 create_connection = "connections add --conn-login " + sys.argv[1] \
-          + " --conn-password" + sys.argv[2] \
-          + "--conn-extra" + json.dumps(role_dict) \
-          + "--conn-type" + "aws"
+          + " --conn-password " + sys.argv[2] \
+          + " --conn-extra " + json.dumps(role_dict) \
+          + " --conn-type " + "aws"
 print(create_connection)
 try:
     resp = requests.post(url, data=create_connection, headers=hed)
