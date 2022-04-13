@@ -83,7 +83,7 @@ jobs:
           echo "**** Deploying tesflow worker assets"
           cd ../tesseract_lambda/src
           aws s3 cp tesseract/* s3://$bucket_name/airflow_environment/dags/tesseract/ --recursive
-          aws s3 cp ../tesflow_artifacts/* s3://$bucket_name/airflow_environment/dags/ --recursive
+          aws s3 cp ../../tesflow_artifacts/* s3://$bucket_name/airflow_environment/dags/ --recursive
 
       # deploy worker code
       - name: deploy worker
