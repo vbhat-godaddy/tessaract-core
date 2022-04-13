@@ -81,7 +81,7 @@ jobs:
           make build
           aws s3 cp dist/*.zip s3://$bucket_name/code/
           echo "**** Deploying tesflow worker assets"
-          cd ../tesseract_lambda
+          cd ../tesseract_lambda/srcs
           aws s3 cp tesseract/* s3://$bucket_name/airflow_environment/dags/tesseract/
           aws s3 cp ../tesflow_artifacts/* s3://$bucket_name/airflow_environment/dags/
 
