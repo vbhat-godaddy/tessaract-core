@@ -115,7 +115,7 @@ jobs:
           SLACK_USERNAME: ahpBot
           SLACK_ICON_EMOJI: ':clapping:'
           SLACK_COLOR: ${{ job.status }}
-          SLACK_MESSAGE: 'Stack launch/Update successful for ${{  github.event.inputs.stack_path }} :highfive:'
+          SLACK_MESSAGE: 'Tesseract launch/Update successful :highfive:'
           SLACK_WEBHOOK: ${{ secrets.SLACK_ALERTS }}
           SLACK_FOOTER: ahpBot GitHub notification
 
@@ -128,7 +128,7 @@ jobs:
           SLACK_USERNAME: ahpBot
           SLACK_ICON_EMOJI: ':headbang:'
           SLACK_COLOR: ${{ job.status }}
-          SLACK_MESSAGE: 'Stack launch/Update failed for ${{  github.event.inputs.stack_path }} \n ${{steps.build_task.outputs.output}} '
+          SLACK_MESSAGE: 'Tesseract launch/Update failed \n ${{steps.build_task.outputs.output}} '
           SLACK_WEBHOOK: ${{ secrets.SLACK_ALERTS }}
           SLACK_FOOTER: ahpBot GitHub notification
 
@@ -141,6 +141,6 @@ jobs:
           SLACK_USERNAME: ahpBot
           SLACK_ICON_EMOJI: ':depressed:'
           SLACK_COLOR: ${{ job.status }}
-          SLACK_MESSAGE: 'Stack launch/Update cancelled for ${{  github.event.inputs.stack_path }} :sad:'
+          SLACK_MESSAGE: 'Tesseract launch/Update cancelled :sad:'
           SLACK_WEBHOOK: ${{ secrets.SLACK_ALERTS }}
           SLACK_FOOTER: ahpBot GitHub notification
