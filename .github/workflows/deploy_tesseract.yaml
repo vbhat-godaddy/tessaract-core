@@ -90,6 +90,8 @@ jobs:
         run: |
           aws sts get-caller-identity
           cd infrastructure
+          sceptre --var-file=vars/deployment_vars.yaml launch -y worker-artifacts/lambda-custom-policy.yaml
+          sceptre --var-file=vars/deployment_vars.yaml launch -y worker-artifacts/lambda-role.yaml
           sceptre --var-file=vars/deployment_vars.yaml launch -y worker-artifacts/tesseract-dyn-loader.yaml
           sceptre --var-file=vars/deployment_vars.yaml launch -y worker-artifacts/tesseract-athena-get-resolver.yaml
           sceptre --var-file=vars/deployment_vars.yaml launch -y worker-artifacts/tes-lambda.yaml
