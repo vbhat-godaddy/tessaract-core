@@ -99,6 +99,8 @@ jobs:
           # sceptre --var-file=vars/deployment_vars.yaml launch -y worker-artifacts/tes-athena-get-resolver.yaml
           # sceptre --var-file=vars/deployment_vars.yaml launch -y worker-artifacts/tes-lambda.yaml
           echo "**** Updating connections"
+          pip install boto3
+          pip install requests
           python scripts/connection_creator.py ${{ secrets.AWS_DEPLOY_ACCESS_KEY }} ${{ secrets.AWS_DEPLOY_SECRET_KEY }} ${{ secrets.AWS_DEPLOY_ROLE }}
 
       # Notify on slack
