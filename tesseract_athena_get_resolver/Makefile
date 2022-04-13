@@ -10,7 +10,7 @@ build:
 	poetry run pip install -I --target build -r requirements.txt
 	poetry run pip install -I --target build --no-deps dist/${ARTIFACT_NAME}-${ARTIFACT_VERSION}-py3-none-any.whl
 	cd build && zip ../dist/${ARTIFACT_NAME}-${ARTIFACT_VERSION}.zip . -r9 -x "*.pyc"
-    cd src && zip -g ../dist/${ARTIFACT_NAME}-${ARTIFACT_VERSION}.zip resolver_config.py
+	cd src && zip -g ../dist/${ARTIFACT_NAME}-${ARTIFACT_VERSION}.zip resolver_config.py
 
 .PHONY: clean
 clean:

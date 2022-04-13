@@ -75,6 +75,11 @@ jobs:
           make clean
           make build
           aws s3 cp dist/*.zip s3://$bucket_name/code/
+          echo "**** Deploying tesseract dynamo worker"
+          cd ../dynamo_worker
+          make clean
+          make build
+          aws s3 cp dist/*.zip s3://$bucket_name/code/
 
 
 
