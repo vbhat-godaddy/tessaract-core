@@ -1,0 +1,85 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: Creates a lambda function that will be called by a cloundwatch event based on the schedule submitted
+Parameters:
+  StackName:
+    Type: String
+    Description: setup a cloudwatch triggered lambda function to monitor and process src_bucket
+  ProductDescription:
+    Type: String
+    Description: Product Description
+  Handler:
+    Type: String
+    Description: handleRequest implementer
+  FileName:
+    Type: String
+    Description: Name of file zip/jar
+  RunTimeEnvironment:
+    Type: String
+    Description: Type of environment to run the code in, for eg, java8/Python3.6 etc.
+  S3CodeBucket:
+    Type: String
+    Description: Code holder (S3)
+  MemorySize:
+    Type: String
+    Description: Max memory needed for Lambda function (in MB)
+    Default: "10240"
+  LambdaTimeout:
+    Type: String
+    Description: Max time a lambda can run, afterwhich it timesout (in seconds)
+    Default: "900"
+  CustomIAMRoleNameSuffix:
+    Type: String
+    Description: Custom IAM role to be attached to lambda
+  JsonParameters:
+    Type: String
+    Description: Environmental Variables passed to Lambda Function
+    Default:  "{}"
+  TeamName:
+    Type: AWS::SSM::Parameter::Value<String>
+    Default: /AdminParams/Team/Name
+  EnvironmentName:
+    Type: AWS::SSM::Parameter::Value<String>
+    Default: /AdminParams/Team/Environment
+  VpcSubnetIds:
+    Type: AWS::SSM::Parameter::Value<List<String>>
+    Description: SSM parameter referencing the subnet IDs
+    Default: /AdminParams/VPC/DXAPPSubnets
+  VpcSecurityGroup:
+    Type: AWS::SSM::Parameter::Value<AWS::EC2::SecurityGroup::Id>
+    Description: SSM parameter referencing the security group ID
+    Default: /AdminParams/VPC/PrivateDXAPPSG
+Resources:
+  LambdaCreation:
+    Type: AWS::ServiceCatalog::CloudFormationProvisionedProduct
+    Properties:
+      ProductName: Lambda
+      ProvisioningArtifactName: 3.1.1
+      ProvisionedProductName: !Sub "gd-${TeamName}-${EnvironmentName}-${StackName}-runner"
+      ProvisioningParameters:
+        - Key: Handler
+          Value: !Ref Handler
+        - Key: S3Bucket
+          Value: !Ref S3CodeBucket
+        - Key: S3Key
+          Value: !Ref FileName
+        - Key: Runtime
+          Value: !Ref RunTimeEnvironment
+        - Key: VpcSubnetIds
+          Value: !Join [ ",", !Ref VpcSubnetIds ]
+        - Key: VpcSecurityGroups
+          Value: !Ref VpcSecurityGroup
+        - Key: LambdaName
+          Value: !Sub "gd-${TeamName}-${EnvironmentName}-${StackName}-runner"
+        - Key: LambdaDescription
+          Value: !Ref ProductDescription
+        - Key: MemorySize
+          Value: !Ref MemorySize
+        - Key: Timeout
+          Value: !Ref LambdaTimeout
+        - Key: CustomIAMRoleNameSuffix
+          Value: !Ref CustomIAMRoleNameSuffix
+        - Key: EnvironmentVariablesJson
+          Value: !Ref JsonParameters
+      Tags:
+        - Key: doNotShutDown
+          Value: true
