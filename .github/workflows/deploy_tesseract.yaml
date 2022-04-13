@@ -80,9 +80,16 @@ jobs:
           make clean
           make build
           aws s3 cp dist/*.zip s3://$bucket_name/code/
+          echo "**** Deploying tesflow worker assets"
+          cd ../tesseract_lambda
+          aws s3 cp tesseract/* s3://$bucket_name/airflow_environment/dags/tesseract/
+          aws s3 cp ../tesflow_artifacts/* s3://$bucket_name/airflow_environment/dags/
 
-
-
+      # deploy worker code
+      - name: deploy worker
+        id: deploy_worker
+        run: |
+          aws sts get-caller-identity
 
       # Notify on slack
       # Always checkout - https://docs.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions

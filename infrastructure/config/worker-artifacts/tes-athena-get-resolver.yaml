@@ -3,7 +3,7 @@ parameters:
   StackName: tes-athena-get-resolver
   ProductDescription: Tesseract Lambda, a get resolver for athena
   Handler: tesseract_athena_get_resolver.tena_get_resolver
-  FileName: code/tesseract_athena_get_resolver.zip
+  FileName: code/tesseract_athena_get_resolver-1.0.zip
   RunTimeEnvironment: python3.9
   CustomIAMRoleNameSuffix: tes-lambda-role
   S3CodeBucket: "gd-{{ var.team_name}}-{{ var.env_val }}-tesseract"
