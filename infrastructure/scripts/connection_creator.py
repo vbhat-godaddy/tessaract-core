@@ -25,4 +25,3 @@ try:
 
 except BaseException as e:
     print(e)
-print(resp.__dict__)
