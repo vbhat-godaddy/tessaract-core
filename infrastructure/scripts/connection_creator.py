@@ -48,3 +48,5 @@ def upload_connection():
     )
     time.sleep(60)
     initiate_connection()
+
+upload_connection()
