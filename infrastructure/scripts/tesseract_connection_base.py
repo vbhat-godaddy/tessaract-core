@@ -14,7 +14,7 @@ with models.DAG(
     schedule_interval=None,
     start_date=dates.days_ago(1),  # Change to suit your needs
     max_active_runs=1,
-    catchUp=False,
+    catchup=False,
     default_args=args,
     tags=["tesseract"],
 ) as dag:
