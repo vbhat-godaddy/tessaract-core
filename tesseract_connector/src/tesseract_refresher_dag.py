@@ -20,23 +20,15 @@ with models.DAG(
     dag.doc_md = "Tesseract Secrets Refresher"
 
     def refresh_secrets(**kwargs):
-        conn = kwargs["conn"]
-        secret_id = kwargs["secret_id"]
-        ssm_client = AwsBaseHook(aws_conn_id=conn, client_type="ssm").get_client_type(
-            "ssm"
-        )
-        env_param = ssm_client.get_parameter(Name="/AdminParams/Team/Environment")
-        env_param_val = env_param["Parameter"]["Value"]
-        if env_param_val == "prod":
-            env = "Prod"
-        else:
-            env = "Dev-Private"
-        secret_id = secret_id + "-" + env
+        deploy_role = kwargs["role"]
+        conn = "tesseract_aws_conn"
         client = AwsBaseHook(
             aws_conn_id=conn, client_type="secretsmanager"
         ).get_client_type("secretsmanager")
         # get secret value for provided Secret ID
-        response = client.get_secret_value(SecretId="/Secrets/IAMUser/" + secret_id)
+        response = client.get_secret_value(
+            SecretId="__SECRET_ID__"
+        )
         # Convert string version of Secret params to JSON
         secretJSON = json.loads(response["SecretString"])
         # Obtain the session to modify Airflow DB
@@ -49,9 +41,6 @@ with models.DAG(
             session.delete(prev_conn_obj)
             session.commit()
         # create a new connection with new parameters
-        deploy_role = (
-            "arn:aws:iam::131859756021:role/GD-AWS-USA-CPO-FindML-" + env + "-Deploy"
-        )
         connobj = Connection(
             conn_id=conn,
             login=secretJSON["AccessKeyId"],
@@ -67,8 +56,7 @@ with models.DAG(
         task_id="refresh_secrets",
         python_callable=refresh_secrets,
         op_kwargs={
-            "secret_id": "GD-AWS-DeployUser-FindML",
-            "conn": "tesseract_aws_conn",
+            "role": "__ROLE__"
         },
         trigger_rule="one_success",
         dag=dag,

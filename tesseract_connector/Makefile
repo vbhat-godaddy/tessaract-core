@@ -11,6 +11,7 @@ build:
 	poetry run pip install -I --target build --no-deps dist/${ARTIFACT_NAME}-${ARTIFACT_VERSION}-py3-none-any.whl
 	cd build && zip ../dist/${ARTIFACT_NAME}-${ARTIFACT_VERSION}.zip . -r9 -x "*.pyc"
 	cd src && zip -g ../dist/${ARTIFACT_NAME}-${ARTIFACT_VERSION}.zip tesseract_connection_base.py
+	zip -g ../dist/${ARTIFACT_NAME}-${ARTIFACT_VERSION}.zip tesseract_refresher_dag.py
 
 .PHONY: clean
 clean:

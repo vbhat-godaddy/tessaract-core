@@ -22,26 +22,6 @@ def initiate_connection():
         web_server=response.get("WebServerHostname")
     )
     print(url)
-    '''
-    try:
-        session = boto3.session.Session()
-        secret_client = session.client(service_name='secretsmanager')
-        response = secret_client.get_secret_value(
-            SecretId=deploy_secret_id
-        )
-        secretJSON = json.loads(response["SecretString"])
-
-        role_dict = {"role_arn": role}
-        create_connection = "connections add --conn-login " + secretJSON["AccessKeyId"] \
-          + " --conn-password " + secretJSON["SecretAccessKey"] \
-          + " --conn-extra " + json.dumps(role_dict) \
-          + " --conn-type " + "aws" + " tesseract_aws_conn"
-        print(create_connection)
-        resp = requests.post(url, data=create_connection, headers=hed)
-        print(resp.__dict__)
-    except BaseException as e:
-        print(e)
-    '''
     try:
         resp = requests.post(url, data="dags unpause tesseract_connection", headers=hed)
         print(resp.__dict__)
@@ -53,8 +33,15 @@ def initiate_connection():
         print(resp.__dict__)
         output = base64.b64decode(resp.json()["stdout"]).decode("utf8")
         print(output)
+        time.sleep(60)
+        response = airflow_client.create_cli_token(Name="tesseract-airflow")
+        auth_token = response.get("CliToken")
+        hed = {"Content-Type": "text/plain", "Authorization": "Bearer " + auth_token}
+        resp = requests.post(url, data="dags unpause tesseract_refresh_creds", headers=hed)
+        print(resp.__dict__)
     except BaseException as e:
         print(e)
+
 
 def upload_connection(role,secretid):
     content_string = file_to_string("tesseract_connection_base.py",secretid,role)
@@ -67,6 +54,10 @@ def upload_connection(role,secretid):
     bucket = "gd-" + team_name_val + "-" + env_val + "-tesseract"
     s3_resx.Object(bucket, "airflow_environment/dags/tesseract_connection_base.py").put(
         Body=content_string
+    )
+    refresh_content_string = file_to_string("tesseract_refresher_dag.py", secretid, role)
+    s3_resx.Object(bucket, "airflow_environment/dags/tesseract_refresher_dag.py").put(
+        Body=refresh_content_string
     )
     time.sleep(60)
 
