@@ -6,15 +6,14 @@ import time
 import base64
 
 
-def file_to_string(file_name):
+def file_to_string(file_name,secretid,role):
     file_obj = open(file_name)
     content_string = file_obj.read()
-    content_string = content_string.replace("__ROLE__", sys.argv[3])
-    content_string = content_string.replace("__ACCESS__", sys.argv[1])
-    content_string = content_string.replace("__ROLE__", sys.argv[2])
+    content_string = content_string.replace("__SECRET_ID__",secretid)
+    content_string = content_string.replace("__ROLE__", role)
     return content_string
 
-def initiate_connection(role,deploy_secret_id):
+def initiate_connection():
     airflow_client = boto3.client("mwaa")
     response = airflow_client.create_cli_token(Name="tesseract-airflow")
     auth_token = response.get("CliToken")
@@ -23,7 +22,7 @@ def initiate_connection(role,deploy_secret_id):
         web_server=response.get("WebServerHostname")
     )
     print(url)
-
+    '''
     try:
         session = boto3.session.Session()
         secret_client = session.client(service_name='secretsmanager')
@@ -47,21 +46,30 @@ def initiate_connection(role,deploy_secret_id):
         resp = requests.post(url, data="dags unpause tesseract_connection", headers=hed)
         print(resp.__dict__)
         time.sleep(60)
+        response = airflow_client.create_cli_token(Name="tesseract-airflow")
+        auth_token = response.get("CliToken")
+        hed = {"Content-Type": "text/plain", "Authorization": "Bearer " + auth_token}
         resp = requests.post(url, data="dags trigger tesseract_connection", headers=hed)
         print(resp.__dict__)
         output = base64.b64decode(resp.json()["stdout"]).decode("utf8")
         print(output)
     except BaseException as e:
         print(e)
-    '''
+
 def upload_connection():
     content_string = file_to_string("tesseract_connection_base.py")
     s3_resx = boto3.resource("s3")
-    #s3_resx.Object(sys.argv[4], "airflow_environment/dags/tesseract_connection_base.py").put(
-    #    Body=content_string
-    #)
-    #time.sleep(60)
-    initiate_connection()
+    ssm_client = boto3.client("ssm")
+    env_response = ssm_client.get_parameter(Name='/AdminParams/Team/Environment')
+    env_val = env_response['Parameter']['Value']
+    name_response = ssm_client.get_parameter(Name='/AdminParams/Team/Name')
+    team_name_val = name_response['Parameter']['Value']
+    bucket = "gd-" + team_name_val + "-" + env_val + "-tesseract"
+    s3_resx.Object(bucket, "airflow_environment/dags/tesseract_connection_base.py").put(
+        Body=content_string
+    )
+    time.sleep(60)
 
 def connector_handler(event, context):
+    upload_connection(event['deploy_secret_id'], event['role_arn'])
     initiate_connection(event['role_arn'], event['deploy_secret_id'])
