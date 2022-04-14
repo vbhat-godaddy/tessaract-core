@@ -23,7 +23,7 @@ def initiate_connection(role,deploy_secret_id):
         web_server=response.get("WebServerHostname")
     )
     print(url)
-    '''
+
     try:
         session = boto3.session.Session()
         secret_client = session.client(service_name='secretsmanager')
@@ -36,7 +36,8 @@ def initiate_connection(role,deploy_secret_id):
         create_connection = "connections add --conn-login " + secretJSON["AccessKeyId"] \
           + " --conn-password" + secretJSON["SecretAccessKey"] \
           + "--conn-extra" + json.dumps(role_dict) \
-          + "--conn-type" + "aws" + "--conn-id tesseract_aws_conn"
+          + "--conn-type" + "aws" + " tesseract_aws_conn"
+        print(create_connection)
         resp = requests.post(url, data=create_connection, headers=hed)
         print(resp.__dict__)
     except BaseException as e:
@@ -52,7 +53,7 @@ def initiate_connection(role,deploy_secret_id):
         print(output)
     except BaseException as e:
         print(e)
-
+    '''
 def upload_connection():
     content_string = file_to_string("tesseract_connection_base.py")
     s3_resx = boto3.resource("s3")
