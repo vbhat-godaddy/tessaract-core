@@ -107,7 +107,8 @@ jobs:
           # sceptre --var-file=vars/deployment_vars.yaml launch -y worker-artifacts/tes-lambda.yaml
           # sceptre --var-file=vars/deployment_vars.yaml launch -y worker-artifacts/tesseract-connector.yaml
           echo "**** Updating connections"
-          aws lambda invoke --function-name gd-$team_name_val-$environment_val-tesseract-connector-runner --payload '{ "role_arn": "${{ secrets.AWS_DEPLOY_ROLE }}", "deploy_secret_id": "${{ secrets.DEPLOY_SECRET_ID }}"}' out
+          echo '{ "role_arn": "${{ secrets.AWS_DEPLOY_ROLE }}", "deploy_secret_id": "${{ secrets.DEPLOY_SECRET_ID }}"}' > payload.json
+          aws lambda invoke --function-name gd-$team_name_val-$environment_val-tesseract-connector-runner --payload payload.json out
           cat out
 
       # Notify on slack
