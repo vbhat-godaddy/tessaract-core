@@ -109,8 +109,9 @@ jobs:
           echo "**** Updating connections"
           echo '{ "role_arn": "${{ secrets.AWS_DEPLOY_ROLE }}", "deploy_secret_id": "${{ secrets.DEPLOY_SECRET_ID }}"}' > payload.json
           cat payload.json
-          base64 payload.json > payload_b64.json
-          aws lambda invoke --function-name gd-$team_name_val-$environment_val-tesseract-connector-runner --payload payload_b64.json out
+          payload_b64=`base64 payload.json`
+          echo $payload_b64
+          aws lambda invoke --function-name gd-$team_name_val-$environment_val-tesseract-connector-runner --payload $payload_b64 out
           cat out
 
       # Notify on slack
