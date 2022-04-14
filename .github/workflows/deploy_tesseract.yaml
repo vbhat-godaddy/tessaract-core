@@ -83,8 +83,8 @@ jobs:
           # aws s3 cp dist/*.zip s3://$bucket_name/code/
           cd ../tesseract_connector
           make clean
-          make build
-          aws s3 cp dist/*.zip s3://$bucket_name/code/
+          # make build
+          # aws s3 cp dist/*.zip s3://$bucket_name/code/
           echo "**** Deploying tesflow worker assets"
           cd ../tesseract_lambda/src
           # aws s3 cp tesseract/wrappers/* s3://$bucket_name/airflow_environment/dags/tesseract/wrappers/ --recursive
@@ -105,9 +105,9 @@ jobs:
           # sceptre --var-file=vars/deployment_vars.yaml launch -y worker-artifacts/tesseract-dyn-loader.yaml
           # sceptre --var-file=vars/deployment_vars.yaml launch -y worker-artifacts/tes-athena-get-resolver.yaml
           # sceptre --var-file=vars/deployment_vars.yaml launch -y worker-artifacts/tes-lambda.yaml
-          sceptre --var-file=vars/deployment_vars.yaml launch -y worker-artifacts/tesseract-connector.yaml
+          # sceptre --var-file=vars/deployment_vars.yaml launch -y worker-artifacts/tesseract-connector.yaml
           echo "**** Updating connections"
-          aws lambda invoke --function-name gd-$team_name_val-$environment_val-tesseract-connector-runner --payload "{ \"role_arn\": \"${{ secrets.AWS_DEPLOY_ROLE }}\", \"deploy_secret_id\": \"${{ secrets.DEPLOY_SECRET_ID }}\" }" out
+          aws lambda invoke --function-name gd-$team_name_val-$environment_val-tesseract-connector-runner --payload '{ "role_arn": "${{ secrets.AWS_DEPLOY_ROLE }}", "deploy_secret_id": "${{ secrets.DEPLOY_SECRET_ID }}"}' out
           cat out
 
       # Notify on slack
