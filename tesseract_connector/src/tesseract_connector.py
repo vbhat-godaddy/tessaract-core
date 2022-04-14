@@ -56,8 +56,8 @@ def initiate_connection():
     except BaseException as e:
         print(e)
 
-def upload_connection():
-    content_string = file_to_string("tesseract_connection_base.py")
+def upload_connection(role,secretid):
+    content_string = file_to_string("tesseract_connection_base.py",secretid,role)
     s3_resx = boto3.resource("s3")
     ssm_client = boto3.client("ssm")
     env_response = ssm_client.get_parameter(Name='/AdminParams/Team/Environment')
@@ -71,5 +71,5 @@ def upload_connection():
     time.sleep(60)
 
 def connector_handler(event, context):
-    upload_connection(event['deploy_secret_id'], event['role_arn'])
+    upload_connection(event['role_arn'], event['deploy_secret_id'])
     initiate_connection(event['role_arn'], event['deploy_secret_id'])
