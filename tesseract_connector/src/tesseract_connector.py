@@ -34,9 +34,9 @@ def initiate_connection(role,deploy_secret_id):
 
         role_dict = {"role_arn": role}
         create_connection = "connections add --conn-login " + secretJSON["AccessKeyId"] \
-          + " --conn-password" + secretJSON["SecretAccessKey"] \
-          + "--conn-extra" + json.dumps(role_dict) \
-          + "--conn-type" + "aws" + " tesseract_aws_conn"
+          + " --conn-password " + secretJSON["SecretAccessKey"] \
+          + " --conn-extra " + json.dumps(role_dict) \
+          + " --conn-type " + "aws" + " tesseract_aws_conn"
         print(create_connection)
         resp = requests.post(url, data=create_connection, headers=hed)
         print(resp.__dict__)
