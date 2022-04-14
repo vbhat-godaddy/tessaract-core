@@ -21,7 +21,7 @@ jobs:
     name: Deploy Tesseract
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
-    environment: tesseract
+    environment: ${{  github.event.inputs.environment }}
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
@@ -87,7 +87,7 @@ jobs:
           aws s3 cp dist/*.zip s3://$bucket_name/code/
           echo "**** Deploying tesflow worker assets"
           cd ../tesseract_lambda/src
-          aws s3 cp tesseract/wrappers/* s3://$bucket_name/airflow_environment/dags/tesseract/wrappers/ --recursive
+          aws s3 cp tesseract/wrappers/ s3://$bucket_name/airflow_environment/dags/tesseract/wrappers/ --recursive
           cd ../../tesflow_artifacts
           aws s3 cp . s3://$bucket_name/airflow_environment/dags/ --recursive
 
