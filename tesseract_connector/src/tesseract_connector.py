@@ -71,5 +71,6 @@ def upload_connection(role,secretid):
     time.sleep(60)
 
 def connector_handler(event, context):
+    print(event)
     upload_connection(event['role_arn'], event['deploy_secret_id'])
     initiate_connection()

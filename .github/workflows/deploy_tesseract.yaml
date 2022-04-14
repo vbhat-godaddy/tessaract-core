@@ -107,12 +107,11 @@ jobs:
           # sceptre --var-file=vars/deployment_vars.yaml launch -y worker-artifacts/tes-lambda.yaml
           # sceptre --var-file=vars/deployment_vars.yaml launch -y worker-artifacts/tesseract-connector.yaml
           echo "**** Updating connections"
-          echo '{ "role_arn": "${{ secrets.AWS_DEPLOY_ROLE }}", "deploy_secret_id": "${{ secrets.DEPLOY_SECRET_ID }}"}' > payload.json
-          cat payload.json
-          payload_b64=`base64 payload.json`
-          echo $payload_b64
-          aws lambda invoke --function-name gd-$team_name_val-$environment_val-tesseract-connector-runner --payload $payload_b64 out
-          cat out
+          export env_val=$environment_val
+          export team_name_val=$team_name_val
+          export secret_id=${{ secrets.DEPLOY_SECRET_ID }}
+          export role=${{ secrets.AWS_DEPLOY_ROLE }}
+          python scripts/init_worker.py
 
       # Notify on slack
       # Always checkout - https://docs.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions
