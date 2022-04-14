@@ -72,4 +72,4 @@ def upload_connection(role,secretid):
 
 def connector_handler(event, context):
     upload_connection(event['role_arn'], event['deploy_secret_id'])
-    initiate_connection(event['role_arn'], event['deploy_secret_id'])
+    initiate_connection()
