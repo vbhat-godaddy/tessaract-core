@@ -81,6 +81,10 @@ jobs:
           make clean
           # make build
           # aws s3 cp dist/*.zip s3://$bucket_name/code/
+          cd ../tesseract_connector
+          make clean
+          make build
+          aws s3 cp dist/*.zip s3://$bucket_name/code/
           echo "**** Deploying tesflow worker assets"
           cd ../tesseract_lambda/src
           # aws s3 cp tesseract/wrappers/* s3://$bucket_name/airflow_environment/dags/tesseract/wrappers/ --recursive
@@ -101,6 +105,7 @@ jobs:
           # sceptre --var-file=vars/deployment_vars.yaml launch -y worker-artifacts/tesseract-dyn-loader.yaml
           # sceptre --var-file=vars/deployment_vars.yaml launch -y worker-artifacts/tes-athena-get-resolver.yaml
           # sceptre --var-file=vars/deployment_vars.yaml launch -y worker-artifacts/tes-lambda.yaml
+          sceptre --var-file=vars/deployment_vars.yaml launch -y worker-artifacts/tesseract-connector.yaml
           echo "**** Updating connections"
           python scripts/connection_creator.py ${{ secrets.AWS_DEPLOY_ACCESS_KEY }} ${{ secrets.AWS_DEPLOY_SECRET_KEY }} ${{ secrets.AWS_DEPLOY_ROLE }} $bucket_name
 

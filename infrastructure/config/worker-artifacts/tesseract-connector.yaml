@@ -1,0 +1,9 @@
+template_path: lambda-base.yaml
+parameters:
+  StackName: tesseract-connector
+  ProductDescription: Tesseract Lambda, Lambda intiate connections
+  Handler: tesseract_connector.connector_handler
+  FileName: code/tesseract_connector-1.0.zip
+  RunTimeEnvironment: python3.9
+  CustomIAMRoleNameSuffix: tes-lambda-role
+  S3CodeBucket: "gd-{{ var.team_name}}-{{ var.env_val }}-tesseract"
