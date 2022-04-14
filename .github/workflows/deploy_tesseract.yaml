@@ -83,8 +83,8 @@ jobs:
           # aws s3 cp dist/*.zip s3://$bucket_name/code/
           cd ../tesseract_connector
           make clean
-          make build
-          aws s3 cp dist/*.zip s3://$bucket_name/code/
+          # make build
+          # aws s3 cp dist/*.zip s3://$bucket_name/code/
           echo "**** Deploying tesflow worker assets"
           cd ../tesseract_lambda/src
           # aws s3 cp tesseract/wrappers/ s3://$bucket_name/airflow_environment/dags/tesseract/wrappers/ --recursive
@@ -111,7 +111,7 @@ jobs:
           export team_name_val=$team_name_val
           export secret_id=${{ secrets.DEPLOY_SECRET_ID }}
           export role=${{ secrets.AWS_DEPLOY_ROLE }}
-          # python scripts/init_worker.py
+          python scripts/init_worker.py
 
       # Notify on slack
       # Always checkout - https://docs.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions
