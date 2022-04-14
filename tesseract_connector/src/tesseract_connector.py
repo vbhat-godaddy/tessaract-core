@@ -2,6 +2,8 @@ import boto3
 import requests
 import json
 import logging
+import time
+import base64
 
 
 def file_to_string(file_name):
@@ -21,6 +23,7 @@ def initiate_connection(role,deploy_secret_id):
         web_server=response.get("WebServerHostname")
     )
     print(url)
+    '''
     try:
         session = boto3.session.Session()
         secret_client = session.client(service_name='secretsmanager')
@@ -49,7 +52,6 @@ def initiate_connection(role,deploy_secret_id):
         print(output)
     except BaseException as e:
         print(e)
-    '''
 
 def upload_connection():
     content_string = file_to_string("tesseract_connection_base.py")
