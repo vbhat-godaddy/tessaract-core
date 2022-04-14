@@ -69,27 +69,27 @@ jobs:
           echo "**** Deploying tesseract lambda"
           cd tesseract_lambda
           make clean
-          make build
-          aws s3 cp dist/*.zip s3://$bucket_name/code/
+          # make build
+          # aws s3 cp dist/*.zip s3://$bucket_name/code/
           echo "**** Deploying tesseract resolver"
           cd ../tesseract_athena_get_resolver
           make clean
-          make build
-          aws s3 cp dist/*.zip s3://$bucket_name/code/
+          # make build
+          # aws s3 cp dist/*.zip s3://$bucket_name/code/
           echo "**** Deploying tesseract dynamo worker"
           cd ../tesseract_dynamo_worker
           make clean
-          make build
-          aws s3 cp dist/*.zip s3://$bucket_name/code/
+          # make build
+          # aws s3 cp dist/*.zip s3://$bucket_name/code/
           cd ../tesseract_connector
           make clean
-          make build
-          aws s3 cp dist/*.zip s3://$bucket_name/code/
+          # make build
+          # aws s3 cp dist/*.zip s3://$bucket_name/code/
           echo "**** Deploying tesflow worker assets"
           cd ../tesseract_lambda/src
-          aws s3 cp tesseract/wrappers/ s3://$bucket_name/airflow_environment/dags/tesseract/wrappers/ --recursive
+          # aws s3 cp tesseract/wrappers/ s3://$bucket_name/airflow_environment/dags/tesseract/wrappers/ --recursive
           cd ../../tesflow_artifacts
-          aws s3 cp . s3://$bucket_name/airflow_environment/dags/ --recursive
+          # aws s3 cp . s3://$bucket_name/airflow_environment/dags/ --recursive
 
       # deploy worker code
       - name: deploy worker
@@ -111,7 +111,7 @@ jobs:
           export team_name_val=$team_name_val
           export secret_id=${{ secrets.DEPLOY_SECRET_ID }}
           export role=${{ secrets.AWS_DEPLOY_ROLE }}
-          # python scripts/init_worker.py
+          python scripts/init_worker.py
 
       # Notify on slack
       # Always checkout - https://docs.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions

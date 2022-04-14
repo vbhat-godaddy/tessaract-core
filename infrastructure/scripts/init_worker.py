@@ -1,9 +1,11 @@
 import boto3
+import botocore
 import os
 import json
 
 def create_connection():
-    lambda_client = boto3.client('lambda')
+    config = botocore.config.Config(connect_timeout=900, read_timeout=910, retries={"max_attempts": 0})
+    lambda_client = boto3.client("lambda", config=config)
     env_val = os.environ['env_val']
     team_name_val = os.environ['team_name_val']
     secret_id = os.environ['secret_id']
