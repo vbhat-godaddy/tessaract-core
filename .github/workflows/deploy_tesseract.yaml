@@ -83,8 +83,8 @@ jobs:
           # aws s3 cp dist/*.zip s3://$bucket_name/code/
           cd ../tesseract_connector
           make clean
-          # make build
-          # aws s3 cp dist/*.zip s3://$bucket_name/code/
+          make build
+          aws s3 cp dist/*.zip s3://$bucket_name/code/
           echo "**** Deploying tesflow worker assets"
           cd ../tesseract_lambda/src
           # aws s3 cp tesseract/wrappers/ s3://$bucket_name/airflow_environment/dags/tesseract/wrappers/ --recursive
