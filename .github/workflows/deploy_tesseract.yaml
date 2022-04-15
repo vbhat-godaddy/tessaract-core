@@ -106,6 +106,10 @@ jobs:
           sceptre --var-file=vars/deployment_vars.yaml launch -y worker-artifacts/tes-athena-get-resolver.yaml
           sceptre --var-file=vars/deployment_vars.yaml launch -y worker-artifacts/tes-lambda.yaml
           sceptre --var-file=vars/deployment_vars.yaml launch -y worker-artifacts/tesseract-connector.yaml
+          echo "**** Deploying tessync artifacts"
+          sceptre --var-file=vars/deployment_vars.yaml launch -y tessync/sync-access-policy.yaml
+          sceptre --var-file=vars/deployment_vars.yaml launch -y tessync/sync-access-role.yaml
+          sceptre --var-file=vars/deployment_vars.yaml launch -y tessync/tesseract-sync-api.yaml
           echo "**** Updating connections"
           export env_val=$environment_val
           export team_name_val=$team_name_val
