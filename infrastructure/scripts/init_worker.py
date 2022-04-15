@@ -18,4 +18,20 @@ def create_connection():
     )
     print(response)
 
+def initate_tessync():
+    client = boto3.client('appsync')
+    response = client.list_graphql_apis()
+    api_arr = response['graphqlApis']
+    api_id = None
+    for api_resp in api_arr:
+        if api_resp['name'] == "tesseract-sync":
+            api_id = api_resp['apiId']
+    if api_id != None:
+        type_definition = "schema { query: Query }"
+        response = client.create_type(
+            apiId=api_id, definition=type_definition, format="SDL"
+        )
+        print(response)
+
 create_connection()
+initate_tessync()
