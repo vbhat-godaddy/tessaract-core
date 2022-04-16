@@ -22,6 +22,7 @@ TESSERACT_LOG = "tesseract_logs/"
 DAG_LIST_TTL = 70
 BASE_FLOW = "code/wrapper_base_dag.py"
 AIRFLOW_LOCATION = "airflow_environment/dags/"
+TES_DYN_WORKER_CNT=1
 SYNC_SOURCE_ROLEARN = (
     "arn:aws:iam::" + ACC_ID + ":role/" + TEAM_VAL + "-custom-tes-lambda-role"
 )
