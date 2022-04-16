@@ -1,12 +1,13 @@
 import boto3
 from base_config import ACC_ID, TEAM_VAL, ACC_REGION, ACC_ENV
-ssm_client = boto3.client("ssm")
-env_response = ssm_client.get_parameter(Name='/AdminParams/Team/Environment')
-env_val = env_response['Parameter']['Value']
-name_response = ssm_client.get_parameter(Name='/AdminParams/Team/Name')
-team_name_val = name_response['Parameter']['Value']
+client = boto3.client('appsync')
+response = client.list_graphql_apis()
+api_arr = response['graphqlApis']
+api_id = None
+for api_resp in api_arr:
+    if api_resp['name'] == "tesseract-sync":
+        api_id = api_resp['apiId']
 bucket = "gd-" + TEAM_VAL + "-" + ACC_ENV + "-tesseract"
-account_id = boto3.client('sts').get_caller_identity().get('Account')
 BASE_S3 = "s3://" + bucket
 CODE_BUCKET = bucket
 ATHENA_RESULTS = "tena_results"
@@ -22,9 +23,9 @@ DAG_LIST_TTL = 70
 BASE_FLOW = "code/wrapper_base_dag.py"
 AIRFLOW_LOCATION = "airflow_environment/dags/"
 SYNC_SOURCE_ROLEARN = (
-    "arn:aws:iam::" + ACC_ID + ":role/" + TEAM_VAL + "-custom-tesseract-auth-cognito"
+    "arn:aws:iam::" + ACC_ID + ":role/" + TEAM_VAL + "-custom-tes-lambda-role"
 )
-SYNC_API_ID = "qk6gr5oyy5fpxgacwzann4orom"
+SYNC_API_ID = api_id
 SYNC_LAMBDA_RESOLVEARN = (
     "arn:aws:lambda:" + ACC_REGION + ":" + ACC_ID + ":function:"
     + "gd-" + TEAM_VAL + "-" + ACC_ENV + "-tes-athena-get-resolver-runner"
