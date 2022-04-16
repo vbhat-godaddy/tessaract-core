@@ -47,7 +47,7 @@ jobs:
           cd infrastructure
           sh vars/var_generator.sh ${{  github.event.inputs.region }}
           echo "Deploying artifacts bucket"
-          # sceptre --var-file=vars/deployment_vars.yaml launch -y worker-artifacts/tesseract-s3.yaml
+          sceptre --var-file=vars/deployment_vars.yaml launch -y worker-artifacts/tesseract-s3.yaml
           echo "Deploying Tesflow Module"
           sceptre --var-file=vars/deployment_vars.yaml launch -y tesflow/tesflow-policy.yaml
           sceptre --var-file=vars/deployment_vars.yaml launch -y tesflow/tesflow-role.yaml
