@@ -36,7 +36,7 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_DEPLOY_ACCESS_KEY }}
           aws-secret-access-key: ${{ secrets.AWS_DEPLOY_SECRET_KEY }}
           role-to-assume: ${{ secrets.AWS_DEPLOY_ROLE }}
-          role-duration-seconds: 3600
+          role-duration-seconds: 7200
           aws-region: ${{  github.event.inputs.region }}
 
       # deploy base artifacts
