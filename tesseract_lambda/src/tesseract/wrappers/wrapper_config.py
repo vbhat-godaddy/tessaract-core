@@ -1,5 +1,5 @@
 import boto3
-from base_config import ACC_ID, TEAM_VAL, ACC_REGION, ACC_ENV
+from tesseract.wrappers.base_config import ACC_ID, TEAM_VAL, ACC_REGION, ACC_ENV
 client = boto3.client('appsync')
 response = client.list_graphql_apis()
 api_arr = response['graphqlApis']
