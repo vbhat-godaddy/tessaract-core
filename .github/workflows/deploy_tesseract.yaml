@@ -67,8 +67,12 @@ jobs:
           poetry --version
           echo $bucketname
           aws s3 cp infrastructure/vars/emrinit.sh s3://$bucket_name/
+          cd infrastructure
+          sh vars/var_generator.sh ${{  github.event.inputs.region }}
+          cd ..
           echo "**** Deploying tesseract lambda"
           cd tesseract_lambda
+          ls src/tesseract/wrappers/
           make clean
           make build
           aws s3 cp dist/*.zip s3://$bucket_name/code/
