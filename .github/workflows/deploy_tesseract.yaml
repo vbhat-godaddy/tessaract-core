@@ -66,6 +66,7 @@ jobs:
           pip install poetry
           poetry --version
           echo $bucketname
+          aws s3 cp infrastructure/vars/emrinit.sh s3://$bucket_name/
           echo "**** Deploying tesseract lambda"
           cd tesseract_lambda
           make clean
@@ -91,6 +92,7 @@ jobs:
           cd ../../tesflow_artifacts
           aws s3 cp . s3://$bucket_name/airflow_environment/dags/ --recursive
 
+
       # deploy worker code
       - name: deploy worker
         id: deploy_worker
@@ -103,6 +105,7 @@ jobs:
           sceptre --var-file=vars/deployment_vars.yaml launch -y worker-artifacts/lambda-custom-policy.yaml
           sceptre --var-file=vars/deployment_vars.yaml launch -y worker-artifacts/lambda-role.yaml
           sceptre --var-file=vars/deployment_vars.yaml launch -y worker-artifacts/tesseract-dyn-loader.yaml
+          sceptre --var-file=vars/deployment_vars.yaml launch -y worker-artifacts/tesseract-dyn-loader1.yaml
           sceptre --var-file=vars/deployment_vars.yaml launch -y worker-artifacts/tes-athena-get-resolver.yaml
           sceptre --var-file=vars/deployment_vars.yaml launch -y worker-artifacts/tes-lambda.yaml
           sceptre --var-file=vars/deployment_vars.yaml launch -y worker-artifacts/tesseract-connector.yaml

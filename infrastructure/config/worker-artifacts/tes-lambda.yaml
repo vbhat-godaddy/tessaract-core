@@ -1,6 +1,6 @@
 template_path: lambda-scheduler-template.yaml
 parameters:
-  StackName: tes-lambda
+  StackName: tesseract-core
   ProductDescription: Tesseract Lambda, invokes tesseract module
   Handler: index.handler
   FileName: code/tesseract-0.1.0.zip

@@ -123,14 +123,14 @@ def copy_dynamo_op(**kwargs):
 
 
 def invoke_tes_dyn_loader(payload):
-    config = botocore.config.Config(connect_timeout=900, read_timeout=910,retries={"max_attempts": 0})
+    config = botocore.config.Config(connect_timeout=900, read_timeout=910, retries={"max_attempts": 0})
     lambda_client = boto3.client("lambda", config=config)
     print(payload)
     function_chooser = randrange(TES_DYN_WORKER_CNT)
     if function_chooser == 0:
-        lambda_function = "tesseract-lambda"
+        lambda_function = "tesseract-lambda-runner"
     else:
-        lambda_function = "tesseract-lambda" + str(function_chooser)
+        lambda_function = "tesseract-lambda" + str(function_chooser) + "-runner"
     try:
         response = lambda_client.invoke(
             FunctionName=lambda_function,

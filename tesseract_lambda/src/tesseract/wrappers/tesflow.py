@@ -100,9 +100,9 @@ from tesseract.wrappers.wrapper_config import BASE_S3, INSIGHT_INPUT
     'num_core_nodes': '4',
     'emr_step_concurrency': '1',
     'emr_custom_job_flow_role_name_suffix': 'emr-ec2-default-role',
-    'emr_sc_bootstrap_file_path': 's3://gd-findml-dev-private-ankush-demo1/emrinit3.sh',
+    'emr_sc_bootstrap_file_path': '{0}/emrinit.sh',
 }
-"""
+""".format(BASE_S3)
             self.code_block.append(config_block)
         model_block = """with models.DAG(
     dag_id=dag_id,
