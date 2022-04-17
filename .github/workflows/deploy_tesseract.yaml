@@ -123,7 +123,7 @@ jobs:
           sceptre --var-file=vars/deployment_vars.yaml launch -y tessync/tesseract-sync-api.yaml
           echo "**** Updating connections"
           sceptre --var-file=vars/deployment_vars.yaml launch -y worker-artifacts/tesseract-data.yaml
-          aws lambda invoke --function-name gd-$team_name_val-$environment_val-tesseract-data-runner --payload '{"a":"b"}' out
+          aws lambda invoke --function-name gd-$team_name_val-$environment_val-tesseract-data-runner --cli-binary-format raw-in-base64-out --payload '{"a":"b"}' out
           export region_val=${{  github.event.inputs.region }}
           export env_val=$environment_val
           export team_name_val=$team_name_val
