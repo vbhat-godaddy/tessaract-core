@@ -36,7 +36,9 @@ def initate_tessync():
         response = client.create_type(
             apiId=api_id, definition=type_definition, format="SDL"
         )
-        type_definition += "type Query { randomFunc(): Int }"
+        print(response)
+        type_definition = "type Query {  randomFunc: Int }"
+        print(type_definition)
         response = client.create_type(
             apiId=api_id, definition=type_definition, format="SDL"
         )
