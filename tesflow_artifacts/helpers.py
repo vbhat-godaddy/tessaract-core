@@ -117,7 +117,7 @@ def copy_dynamo_op(**kwargs):
         }
         event_array.append(event_json)
     if len(event_array) > 0:
-        with ThreadPoolExecutor(max_workers=25) as executor:
+        with ThreadPoolExecutor(max_workers=10) as executor:
             results = executor.map(invoke_tes_dyn_loader, event_array)
             logging.info("Results from thread = " + str(results))
 
@@ -216,7 +216,7 @@ def create_dynamo_data_op(**kwargs):
                 result = [dict(zip(header, get_row_data(row))) for row in rows]
                 print(result)
                 row_count = int(result[0]["row_count"])
-                bucket_count = (int)(row_count / 70000) + 1
+                bucket_count = (int)(row_count / 50000) + 1
                 print("Bucket Count = " + str(bucket_count))
         else:
             counter = counter - 1
