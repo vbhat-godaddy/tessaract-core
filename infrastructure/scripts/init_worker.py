@@ -118,7 +118,19 @@ def execute_query(query, output_s3):
                 break
             time.sleep(5)
 
+def connect_sensor():
+    dynamodb_client = boto3.client("dynamodb")
+    table = dynamodb_client.create_table(
+        TableName="tesseract",
+        KeySchema=[{"AttributeName": "insight", "KeyType": "HASH"}],
+        BillingMode="PAY_PER_REQUEST",
+        AttributeDefinitions=[{"AttributeName": "insight", "AttributeType": "S"}],
+    )
+    print(table)
+    logging.info("create_dynamo_op: table creation result:")
+    logging.info(table)
 
 create_connection()
 initate_tessync()
 create_athena_connectors()
+connect_sensor()
