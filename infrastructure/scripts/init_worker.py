@@ -32,7 +32,10 @@ def initate_tessync():
         if api_resp['name'] == "tesseract-sync":
             api_id = api_resp['apiId']
     if api_id != None:
-        type_definition = "schema { query: Query }" + "\n"
+        type_definition = "schema { query: Query }"
+        response = client.create_type(
+            apiId=api_id, definition=type_definition, format="SDL"
+        )
         type_definition += "type Query { randomFunc(): Int }"
         response = client.create_type(
             apiId=api_id, definition=type_definition, format="SDL"
