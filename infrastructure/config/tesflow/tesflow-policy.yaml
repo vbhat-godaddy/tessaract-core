@@ -53,7 +53,8 @@ parameters:
             {
                 "Action": [
                     "servicecatalog:*",
-                    "dynamodb:*"
+                    "dynamodb:*",
+                    "appsync:*"
                 ],
                 "Resource": "*",
                 "Effect": "Allow"
