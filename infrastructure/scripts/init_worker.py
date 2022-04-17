@@ -68,50 +68,6 @@ def create_athena_connectors():
                       "insight_name string) \n STORED AS ORC  \n LOCATION '" + \
                       "s3://" + s3_bucket + "/database/tesseract/runnable_insights' ;"
     query_arr.append(runnable_string)
-    query_response = None
-    try:
-        query_response = athena_client.start_query_execution(
-            QueryString="CREATE DATABASE IF NOT EXISTS tesseract " +
-                        "LOCATION 's3://" + s3_bucket + "/database/' ;",
-            ResultConfiguration={
-                "OutputLocation": output_s3,
-            },
-        )
-    except athena_client.exceptions.InternalServerException as se:
-        logging.error("Internal Server error (500)" + str(se))
-        return False
-    except athena_client.exceptions.InvalidRequestException as ir:
-        logging.error("Bad Request Submitted (400) " + str(ir))
-        return False
-    except athena_client.exceptions.TooManyRequestsException as re:
-        logging.error("Throttling requests (400) " + str(re))
-        return False
-    except BaseException as be:
-        logging.error("Unknown exception " + str(be))
-        return False
-    poll_flag = True
-    counter = 50
-    while poll_flag:
-        query_status_resp = athena_client.get_query_execution(
-            QueryExecutionId=query_response["QueryExecutionId"]
-        )
-        status = query_status_resp["QueryExecution"]["Status"]["State"]
-
-        if (status == "FAILED") or (status == "CANCELLED"):
-            failure_reason = query_status_resp["QueryExecution"]["Status"][
-                "StateChangeReason"
-            ]
-            logging.error("Update Dynamo failed :: " + str(failure_reason))
-            poll_flag = False
-            break
-        elif status == "SUCCEEDED":
-            poll_flag = False
-        else:
-            counter = counter - 1
-            if counter == 0:
-                poll_flag = False
-                break
-            time.sleep(5)
     for query in query_arr:
         execute_query(query, output_s3)
 

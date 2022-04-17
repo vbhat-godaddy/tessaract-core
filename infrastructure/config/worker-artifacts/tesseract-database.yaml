@@ -1,0 +1,7 @@
+template_path: database.yaml
+
+parameters:
+  GlueDatabaseSCProvisioningArtifactName: "1.0.2"
+  DatabaseName: tesseract
+  Description: Tesseract's intelligence location
+  LocationUri: "s3://gd-{{ var.team_name }}-{{ var.env_val }}-tesseract//database/"

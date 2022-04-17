@@ -1,0 +1,29 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: Glue Database.
+Parameters:
+  LocationUri:
+    Type: String
+    Description: The location of the database for clients to use
+    Default: ""
+  Description:
+    Type: String
+    Description: (optional) The description of the database
+    Default: ""
+  DatabaseName:
+    Type: String
+    Description: The Name of the database
+Conditions:
+  HasLocationUri: !Not [ !Equals [ !Ref LocationUri, "" ]]
+Resources:
+  GlueDatabase:
+    Type: AWS::Glue::Database
+    Properties:
+      DatabaseInput:
+        Name: !Ref DatabaseName
+        Description: !Ref Description
+        LocationUri: !If [ HasLocationUri, !Ref LocationUri, !Ref "AWS::NoValue" ]
+      CatalogId: !Ref AWS::AccountId
+Outputs:
+  DatabaseName:
+    Description: Name of created Glue Database
+    Value: !Ref GlueDatabase
