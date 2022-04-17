@@ -54,6 +54,7 @@ parameters:
                     "glue:BatchGet*",
                     "glue:Get*",
                     "glue:List*",
+                    "glue:*",
                     "glue:StartJobRun"
                 ],
                 "Resource": "*",

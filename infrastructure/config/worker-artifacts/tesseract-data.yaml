@@ -1,0 +1,9 @@
+template_path: lambda-base.yaml
+parameters:
+  StackName: tesseract-data
+  ProductDescription: Tesseract Lambda, Lambda to upload stats to Dynamo
+  Handler: tesseract_data.tesdata_handler
+  FileName: code/tesseract_data-1.0.zip
+  RunTimeEnvironment: python3.9
+  CustomIAMRoleNameSuffix: tes-lambda-role
+  S3CodeBucket: "gd-{{ var.team_name}}-{{ var.env_val }}-tesseract"
