@@ -21,7 +21,7 @@ from tesseract.wrappers.wrapper_config import (
     INSIGHT_NOTIFICATION,
     TES_DYN_WORKER_CNT,
 )
-
+from tesseract.wrappers.base_config import TEAM_VAL, ACC_REGION, ACC_ENV
 # from airflow.providers.slack.operators.slack_webhook import SlackWebhookOperator
 
 DOCS = """
@@ -133,7 +133,7 @@ def invoke_tes_dyn_loader(payload):
         lambda_function = "tesseract-lambda" + str(function_chooser) + "-runner"
     try:
         response = lambda_client.invoke(
-            FunctionName=lambda_function,
+            FunctionName="gd-" + TEAM_VAL + "-" + ACC_ENV + "-" + lambda_function,
             InvocationType="RequestResponse",
             Payload=json.dumps(payload),
         )
@@ -302,6 +302,8 @@ def create_insight_op(**kwargs):
     result = tena_object.tena_process(insight_config, create_query)
     print("Tesseract Helper: Insight Execution result = " + str(result))
     logging.info("Tesseract Helper: Insight Execution result = " + str(result))
+    if result == False:
+        raise Exception("Issue with Insight Generation")
     return result
 
 
